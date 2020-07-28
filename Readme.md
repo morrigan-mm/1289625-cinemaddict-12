@@ -1,7 +1,7 @@
 # Личный проект «Киноман» [![Build status][travis-image]][travis-url]
 
-* Студент: [Марина Беклова](https://up.htmlacademy.ru/ecmascript/12/user/1289625).
-* Наставник: `Неизвестно`.
+- Студент: [Марина Беклова](https://up.htmlacademy.ru/ecmascript/12/user/1289625).
+- Наставник: [Алексей Лизурчик](https://htmlacademy.ru/profile/id1431185).
 
 ---
 
