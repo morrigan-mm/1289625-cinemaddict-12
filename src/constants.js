@@ -5,5 +5,5 @@ export const FilmCardCount = {
 
 export const EmojiSize = {
   SMALL: 30,
-  LARGE: 55,
+  LARGE: 55
 };
