@@ -8,15 +8,14 @@ import {createFooterStatisticsTemplate} from "./view/footer-statistics.js";
 import {createShowMoreButtonTemplate} from "./view/show-more-button.js";
 import {createFilmCardPopupTemplate} from "./view/film-card-popup.js";
 import {FilmCardCount} from "./constants.js";
+import {sortBy} from "./utils.js";
 
 import {generateFilmCard} from "./mock/film-card.js";
 import {generateFilter} from "./mock/filter.js";
 
-const MOCK_COUNT = 20;
-
-const films = new Array(MOCK_COUNT).fill().map(generateFilmCard);
-const topRatedFilms = films.slice().sort((min, max) => max.rating - min.rating).slice(0, FilmCardCount.EXTRA);
-const mostCommentedFilms = films.slice().sort((min, max) => max.comments.length - min.comments.length).slice(0, FilmCardCount.EXTRA);
+const films = new Array(FilmCardCount.MOCK_COUNT).fill().map(generateFilmCard);
+const topRatedFilms = sortBy(films, (film) => film.rating);
+const mostCommentedFilms = sortBy(films, (film) => film.comments.length);
 const primaryFilms = films.length > FilmCardCount.DEFAULT
   ? films.slice(0, FilmCardCount.DEFAULT)
   : films;
@@ -39,8 +38,8 @@ render(main, createContainerTemplate(), `beforeend`);
 const content = main.querySelector(`.films`);
 
 render(content, createContentLayoutTemplate(`All movies. Upcoming`, primaryFilms, {hiddenTitle: true}), `beforeend`);
-render(content, createContentLayoutTemplate(`Top rated`, topRatedFilms, {extra: true}), `beforeend`);
-render(content, createContentLayoutTemplate(`Most commented`, mostCommentedFilms, {extra: true}), `beforeend`);
+render(content, createContentLayoutTemplate(`Top rated`, topRatedFilms.slice(0, FilmCardCount.EXTRA), {extra: true}), `beforeend`);
+render(content, createContentLayoutTemplate(`Most commented`, mostCommentedFilms.slice(0, FilmCardCount.EXTRA), {extra: true}), `beforeend`);
 
 if (films.length > FilmCardCount.DEFAULT) {
   let renderedFilmCount = FilmCardCount.DEFAULT;

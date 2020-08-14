@@ -1,4 +1,4 @@
-import {capitalize} from "../utils.js";
+import {capitalize, formatDate} from "../utils.js";
 
 const createGenresTemplate = (genres) => {
   return genres
@@ -9,7 +9,7 @@ const createGenresTemplate = (genres) => {
 export const createFilmDetailsTemplate = (film) => {
   const {title, originalTitle, rating, description, poster, director, writers, actors, releaseDate, duration, country, genres, age} = film;
 
-  const release = releaseDate.toLocaleString(`en-GB`, {year: `numeric`, day: `numeric`, month: `long`});
+  const release = formatDate(releaseDate, `calendar`);
 
   const genresTitle = genres.length > 1
     ? `Genres`

@@ -34,13 +34,13 @@ const generateFilmPoster = () => {
 
 const generateFilmDescription = () => {
   const text = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
-  const sentenceList = text.split(`. `).map((item) => item.concat(`.`));
+  const sentenceList = text.split(`. `).map((item) => `${item}.`);
 
   const amount = getRandomInteger(1, 5);
   const chapter = [];
   for (let i = 0; i < amount; i++) {
-    let index = getRandomInteger(0, sentenceList.length - 1);
-    let sentence = sentenceList[index];
+    const index = getRandomInteger(0, sentenceList.length - 1);
+    const sentence = sentenceList[index];
     chapter.push(sentence);
   }
 
@@ -51,18 +51,17 @@ const generateFilmRating = () => {
   const a = getRandomInteger(0, 10);
   const b = getRandomInteger(0, 9);
 
-  return a + `.` + b;
+  return `${a}.${b}`;
 };
 
 const generateFilmGenre = () => {
   const genres = [`comedy`, `cartoon`, `drama`, `horror`, `musical`];
   const maxInteger = getRandomInteger(1, genres.length);
-  const genresList = genres.slice(0, maxInteger);
 
-  return genresList;
+  return genres.slice(0, maxInteger);
 };
 
-const generateRandomEmoji = () => {
+const generateEmoji = () => {
   const emojiList = [`smile`, `sleeping`, `angry`, `puke`];
   const randomIndex = getRandomInteger(0, emojiList.length - 1);
 
@@ -87,7 +86,7 @@ const generateDate = () => {
 
 const generateComment = () => {
   return {
-    emoji: generateRandomEmoji(),
+    emoji: generateEmoji(),
     text: generateEmojiText(),
     author: `John Doe`,
     date: generateDate()
@@ -96,9 +95,8 @@ const generateComment = () => {
 
 const generateCommentList = () => {
   const amount = getRandomInteger(0, 5);
-  const commentList = new Array(amount).fill().map(generateComment);
 
-  return commentList;
+  return Array.from({length: amount}).fill().map(generateComment);
 };
 
 export const generateFilmCard = () => {

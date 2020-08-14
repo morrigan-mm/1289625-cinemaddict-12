@@ -4,7 +4,7 @@ export const createContentLayoutTemplate = (title, films, options = {}) => {
   const {extra, hiddenTitle} = options;
   const className = extra ? `films-list--extra` : `films-list`;
   const titleClassNames = [`films-list__title`];
-  const filmList = films.map(createFilmCardTemplate);
+  const filmList = films.map((film) => createFilmCardTemplate(film));
 
   if (hiddenTitle) {
     titleClassNames.push(`visually-hidden`);

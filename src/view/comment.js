@@ -1,10 +1,9 @@
 import {createEmojiTemplate} from "./emoji.js";
 import {EmojiSize} from "../constants.js";
+import {formatDate} from "../utils.js";
 
 export const createCommentTemplate = (comment) => {
   const {emoji, text, author, date} = comment;
-
-  const dateFormatted = date.toLocaleDateString(`zh-Hans-CN`, {minute: `numeric`, hour: `numeric`, hour12: false});
 
   return (
     `<li class="film-details__comment">
@@ -15,7 +14,7 @@ export const createCommentTemplate = (comment) => {
         <p class="film-details__comment-text">${text}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
-          <span class="film-details__comment-day">${dateFormatted}</span>
+          <span class="film-details__comment-day">${formatDate(date, `timestamp`)}</span>
           <button class="film-details__comment-delete">Delete</button>
         </p>
       </div>

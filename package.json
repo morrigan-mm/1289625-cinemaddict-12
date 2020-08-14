@@ -18,5 +18,8 @@
   },
   "engines": {
     "node": "12"
+  },
+  "dependencies": {
+    "classnames": "2.2.6"
   }
 }

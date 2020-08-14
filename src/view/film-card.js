@@ -1,25 +1,23 @@
+import classNames from "classnames";
+
 const MAX_DESC_LENGTH = 140;
 
-export const createFilmCardTemplate = (film) => {
+const getButtonClassName = (type, active) => {
+  return classNames(
+      `button`,
+      `film-card__controls-item`,
+      `film-card__controls-item--${type}`,
+      (active && `film-card__controls-item--active`)
+  );
+};
+
+export const createFilmCardTemplate = (film, maxDescLength = MAX_DESC_LENGTH) => {
   const {title, rating, description, poster, releaseDate, duration, genres, comments, isAddedToWatchList, isWatched, isFavorite} = film;
   const [filmGenre] = genres;
   const commentsCount = comments.length;
-  const activeClassName = `film-card__controls-item--active`;
 
-  const addToWatchListClassNames = isAddedToWatchList
-    ? `film-card__controls-item--add-to-watchlist ${activeClassName}`
-    : `film-card__controls-item--add-to-watchlist`;
-
-  const watchedClassNames = isWatched
-    ? `film-card__controls-item--mark-as-watched ${activeClassName}`
-    : `film-card__controls-item--mark-as-watched`;
-
-  const favoriteClassNames = isFavorite
-    ? `film-card__controls-item--favorite ${activeClassName}`
-    : `film-card__controls-item--favorite`;
-
-  const descriptionText = description.length >= MAX_DESC_LENGTH
-    ? description.slice(0, MAX_DESC_LENGTH).concat(`…`)
+  const descriptionText = description.length > maxDescLength
+    ? `${description.slice(0, maxDescLength)}…`
     : description;
 
   return (
@@ -35,9 +33,9 @@ export const createFilmCardTemplate = (film) => {
       <p class="film-card__description">${descriptionText}</p>
       <a class="film-card__comments">${commentsCount} comments</a>
       <form class="film-card__controls">
-        <button class="film-card__controls-item button ${addToWatchListClassNames}">Add to watchlist</button>
-        <button class="film-card__controls-item button ${watchedClassNames}">Mark as watched</button>
-        <button class="film-card__controls-item button ${favoriteClassNames}">Mark as favorite</button>
+        <button class="film-card__controls-item button ${getButtonClassName(`add-to-watchlist`, isAddedToWatchList)}">Add to watchlist</button>
+        <button class="film-card__controls-item button ${getButtonClassName(`mark-as-watched`, isWatched)}">Mark as watched</button>
+        <button class="film-card__controls-item button ${getButtonClassName(`favorite`, isFavorite)}">Mark as favorite</button>
       </form>
     </article>`
   );
