@@ -3,8 +3,24 @@ import {createMainNavigationTemplate} from "./view/main-navigation.js";
 import {createSortingTemplate} from "./view/sorting.js";
 import {createContainerTemplate} from "./view/container.js";
 import {createContentLayoutTemplate} from "./view/content-layout.js";
+import {createFilmCardTemplate} from "./view/film-card.js";
 import {createFooterStatisticsTemplate} from "./view/footer-statistics.js";
+import {createShowMoreButtonTemplate} from "./view/show-more-button.js";
 import {createFilmCardPopupTemplate} from "./view/film-card-popup.js";
+import {FilmCardCount} from "./constants.js";
+import {sortBy} from "./utils.js";
+
+import {generateFilmCard} from "./mock/film-card.js";
+import {generateFilter} from "./mock/filter.js";
+
+const films = new Array(FilmCardCount.MOCK_COUNT).fill().map(generateFilmCard);
+const topRatedFilms = sortBy(films, (film) => film.rating);
+const mostCommentedFilms = sortBy(films, (film) => film.comments.length);
+const primaryFilms = films.length > FilmCardCount.DEFAULT
+  ? films.slice(0, FilmCardCount.DEFAULT)
+  : films;
+
+const filters = generateFilter(films);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -15,19 +31,41 @@ const header = body.querySelector(`.header`);
 render(header, createHeaderProfileTemplate(), `beforeend`);
 
 const main = body.querySelector(`.main`);
-render(main, createMainNavigationTemplate(), `beforeend`);
+render(main, createMainNavigationTemplate(filters), `beforeend`);
 render(main, createSortingTemplate(), `beforeend`);
 render(main, createContainerTemplate(), `beforeend`);
 
 const content = main.querySelector(`.films`);
 
-render(content, createContentLayoutTemplate(`All movies. Upcoming`, {button: true, hiddenTitle: true}), `beforeend`);
-render(content, createContentLayoutTemplate(`Top rated`, {extra: true}), `beforeend`);
-render(content, createContentLayoutTemplate(`Most commented`, {extra: true}), `beforeend`);
+render(content, createContentLayoutTemplate(`All movies. Upcoming`, primaryFilms, {hiddenTitle: true}), `beforeend`);
+render(content, createContentLayoutTemplate(`Top rated`, topRatedFilms.slice(0, FilmCardCount.EXTRA), {extra: true}), `beforeend`);
+render(content, createContentLayoutTemplate(`Most commented`, mostCommentedFilms.slice(0, FilmCardCount.EXTRA), {extra: true}), `beforeend`);
+
+if (films.length > FilmCardCount.DEFAULT) {
+  let renderedFilmCount = FilmCardCount.DEFAULT;
+  const innerContainer = content.querySelector(`.films-list`);
+  const filmsContainer = innerContainer.querySelector(`.films-list__container`);
+  render(innerContainer, createShowMoreButtonTemplate(), `beforeend`);
+
+  const showMoreButton = innerContainer.querySelector(`.films-list__show-more`);
+
+  showMoreButton.addEventListener(`click`, (evt) => {
+    evt.preventDefault();
+
+    films
+      .slice(renderedFilmCount, renderedFilmCount + FilmCardCount.DEFAULT)
+      .forEach((film) => render(filmsContainer, createFilmCardTemplate(film), `beforeend`));
+
+    renderedFilmCount += FilmCardCount.DEFAULT;
+
+    if (renderedFilmCount >= films.length) {
+      showMoreButton.remove();
+    }
+  });
+}
 
 const footerStatistics = body.querySelector(`.footer__statistics`);
-render(footerStatistics, createFooterStatisticsTemplate(), `beforeend`);
+render(footerStatistics, createFooterStatisticsTemplate(filters[0].count), `beforeend`);
 
 body.classList.add(`hide-overflow`);
-render(body, createFilmCardPopupTemplate(), `beforeend`);
-
+render(body, createFilmCardPopupTemplate(films[0]), `beforeend`);

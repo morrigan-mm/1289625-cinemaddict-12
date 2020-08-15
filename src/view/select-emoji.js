@@ -1,4 +1,4 @@
-import {EmojiSize} from "./constants";
+import {EmojiSize} from "../constants.js";
 import {createEmojiTemplate} from "./emoji.js";
 
 export const createSelectEmojiTemplate = (emoji, active) => {
