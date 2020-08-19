@@ -1,16 +1,33 @@
-const dateFormatMap = {
-  /**
-   * YYYY/M/D HH:MM
-   */
-  timestamp: [`zh-Hans-CN`, {minute: `numeric`, hour: `numeric`, hour12: false}],
-  /**
-   * D MONTH YYYY
-   */
-  calendar: [`en-GB`, {year: `numeric`, day: `numeric`, month: `long`}]
+export const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
+
+export const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
+export const renderTemplate = (container, template, place) => {
+  container.insertAdjacentHTML(place, template);
 };
 
 export const formatDate = (date, format) => {
-  const params = dateFormatMap[format] || [];
+  const params = format || [];
+
   return date.toLocaleDateString(...params);
 };
 

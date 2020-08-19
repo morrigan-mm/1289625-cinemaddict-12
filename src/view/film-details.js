@@ -1,4 +1,5 @@
-import {capitalize, formatDate} from "../utils.js";
+import {DateFormat} from "../constants.js";
+import {createElement, capitalize, formatDate} from "../utils.js";
 
 const createGenresTemplate = (genres) => {
   return genres
@@ -6,10 +7,10 @@ const createGenresTemplate = (genres) => {
     .join(``);
 };
 
-export const createFilmDetailsTemplate = (film) => {
+const createFilmDetailsTemplate = (film) => {
   const {title, originalTitle, rating, description, poster, director, writers, actors, releaseDate, duration, country, genres, age} = film;
 
-  const release = formatDate(releaseDate, `calendar`);
+  const release = formatDate(releaseDate, DateFormat.CALENDAR);
 
   const genresTitle = genres.length > 1
     ? `Genres`
@@ -77,3 +78,26 @@ export const createFilmDetailsTemplate = (film) => {
     </div>`
   );
 };
+
+export default class FilmDetails {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmDetailsTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

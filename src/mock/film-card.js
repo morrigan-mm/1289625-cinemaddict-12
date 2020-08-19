@@ -1,3 +1,4 @@
+import {EMOJI_LIST} from "../constants.js";
 import {getRandomInteger, getRandomBoolean} from "../utils.js";
 
 const generateFilmTitle = () => {
@@ -62,10 +63,9 @@ const generateFilmGenre = () => {
 };
 
 const generateEmoji = () => {
-  const emojiList = [`smile`, `sleeping`, `angry`, `puke`];
-  const randomIndex = getRandomInteger(0, emojiList.length - 1);
+  const randomIndex = getRandomInteger(0, EMOJI_LIST.length - 1);
 
-  return emojiList[randomIndex];
+  return EMOJI_LIST[randomIndex];
 };
 
 const generateEmojiText = () => {
@@ -96,7 +96,7 @@ const generateComment = () => {
 const generateCommentList = () => {
   const amount = getRandomInteger(0, 5);
 
-  return Array.from({length: amount}).fill().map(generateComment);
+  return Array.from({length: amount}).map(generateComment);
 };
 
 export const generateFilmCard = () => {

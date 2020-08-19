@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import {createElement} from "../utils.js";
 
 const MAX_DESC_LENGTH = 140;
 
@@ -11,7 +12,7 @@ const getButtonClassName = (type, active) => {
   );
 };
 
-export const createFilmCardTemplate = (film, maxDescLength = MAX_DESC_LENGTH) => {
+const createFilmCardTemplate = (film, maxDescLength) => {
   const {title, rating, description, poster, releaseDate, duration, genres, comments, isAddedToWatchList, isWatched, isFavorite} = film;
   const [filmGenre] = genres;
   const commentsCount = comments.length;
@@ -40,3 +41,27 @@ export const createFilmCardTemplate = (film, maxDescLength = MAX_DESC_LENGTH) =>
     </article>`
   );
 };
+
+export default class FilmCard {
+  constructor(film, maxDescLength = MAX_DESC_LENGTH) {
+    this._film = film;
+    this._maxDescLength = maxDescLength;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film, this._maxDescLength);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
