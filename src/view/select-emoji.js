@@ -2,7 +2,7 @@ import {EmojiSize} from "../constants.js";
 import {createElement} from "../utils.js";
 import EmojiView from "./emoji.js";
 
-const CONTAINER_CLASSNAME = `film-details__emoji-label`;
+const EMOJI_CONTAINER_CLASSNAME = `film-details__emoji-label`;
 
 const createSelectEmojiTemplate = (emoji, active) => {
   return (
@@ -14,7 +14,7 @@ const createSelectEmojiTemplate = (emoji, active) => {
         value="${emoji}"
         ${active ? `checked` : ``}
       >
-      <label class="${CONTAINER_CLASSNAME}" for="emoji-${emoji}"></label>
+      <label class="${EMOJI_CONTAINER_CLASSNAME}" for="emoji-${emoji}"></label>
     </span>`
   );
 };
@@ -33,7 +33,9 @@ export default class SelectEmoji {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
-      const wrapper = this._element.querySelector(`.${CONTAINER_CLASSNAME}`);
+
+      const wrapper = this._element.querySelector(`.${EMOJI_CONTAINER_CLASSNAME}`);
+
       wrapper.appendChild(new EmojiView(this._emoji, EmojiSize.SMALL).getElement());
     }
 

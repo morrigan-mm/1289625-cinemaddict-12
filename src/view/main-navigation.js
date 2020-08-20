@@ -1,4 +1,5 @@
 import {createElement, capitalize} from "../utils.js";
+import {FilterTitle} from "../constants.js";
 
 const createFilterItemTemplate = (filter, active) => {
   const {title, count} = filter;
@@ -6,7 +7,7 @@ const createFilterItemTemplate = (filter, active) => {
     ? `main-navigation__item main-navigation__item--active`
     : `main-navigation__item`;
 
-  if (title === `all`) {
+  if (title === FilterTitle.ALL) {
     return `<a href="#${title}" class="${classNames}">All movies</a>`;
   }
   return ` <a href="#${title}" class="${classNames}">${capitalize(title)} <span class="main-navigation__item-count">${count}</span></a>`;

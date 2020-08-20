@@ -25,8 +25,8 @@ export const renderTemplate = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-export const formatDate = (date, format) => {
-  const params = format || [];
+export const formatDate = (date, format = []) => {
+  const params = format;
 
   return date.toLocaleDateString(...params);
 };

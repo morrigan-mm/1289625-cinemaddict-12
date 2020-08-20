@@ -1,16 +1,16 @@
 import {createElement} from "../utils.js";
 
-const createContainerTemplate = () => {
+const createFilmsContainerTemplate = () => {
   return `<section class="films"></section>`;
 };
 
-export default class Container {
+export default class FilmsContainer {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createContainerTemplate();
+    return createFilmsContainerTemplate();
   }
 
   getElement() {

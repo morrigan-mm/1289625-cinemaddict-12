@@ -1,4 +1,4 @@
-import {EMOJI_LIST} from "../constants.js";
+import {EMOJIS} from "../constants.js";
 import {getRandomInteger, getRandomBoolean} from "../utils.js";
 
 const generateFilmTitle = () => {
@@ -63,9 +63,9 @@ const generateFilmGenre = () => {
 };
 
 const generateEmoji = () => {
-  const randomIndex = getRandomInteger(0, EMOJI_LIST.length - 1);
+  const randomIndex = getRandomInteger(0, EMOJIS.length - 1);
 
-  return EMOJI_LIST[randomIndex];
+  return EMOJIS[randomIndex];
 };
 
 const generateEmojiText = () => {

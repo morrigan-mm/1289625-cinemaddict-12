@@ -1,8 +1,8 @@
 import {createElement} from "../utils.js";
 
-const CONTAINER_CLASSNAME = `films-list__container`;
+const FILMS_CONTAINER_CLASSNAME = `films-list__container`;
 
-const createContentLayoutTemplate = (title, options) => {
+const createFilmsSectionTemplate = (title, options) => {
   const {extra, hiddenTitle} = options;
   const className = extra ? `films-list--extra` : `films-list`;
   const titleClassNames = [`films-list__title`];
@@ -14,12 +14,12 @@ const createContentLayoutTemplate = (title, options) => {
   return (
     `<section class="${className}">
       <h2 class="${titleClassNames.join(` `)}">${title}</h2>
-      <div class="${CONTAINER_CLASSNAME}"></div>
+      <div class="${FILMS_CONTAINER_CLASSNAME}"></div>
     </section>`
   );
 };
 
-export default class ContentLayout {
+export default class FilmsSection {
   constructor(title, options = {}) {
     this._title = title;
     this._options = options;
@@ -27,7 +27,7 @@ export default class ContentLayout {
   }
 
   getTemplate() {
-    return createContentLayoutTemplate(this._title, this._options);
+    return createFilmsSectionTemplate(this._title, this._options);
   }
 
   getElement() {
@@ -38,8 +38,8 @@ export default class ContentLayout {
     return this._element;
   }
 
-  getContainer() {
-    return this.getElement().querySelector(`.${CONTAINER_CLASSNAME}`);
+  getFilmsContainer() {
+    return this.getElement().querySelector(`.${FILMS_CONTAINER_CLASSNAME}`);
   }
 
   removeElement() {

@@ -1,4 +1,4 @@
-export const EMOJI_LIST = [`smile`, `sleeping`, `angry`, `puke`];
+export const EMOJIS = [`smile`, `sleeping`, `angry`, `puke`];
 
 export const FilmCardCount = {
   MOCK_COUNT: 20,
@@ -20,4 +20,11 @@ export const DateFormat = {
    * D MONTH YYYY
    */
   CALENDAR: [`en-GB`, {year: `numeric`, day: `numeric`, month: `long`}]
+};
+
+export const FilterTitle = {
+  ALL: `all`,
+  WATCHLIST: `watchlist`,
+  HISTORY: `history`,
+  FAVORITES: `favorites`
 };

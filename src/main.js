@@ -1,8 +1,8 @@
 import HeaderProfileView from "./view/header-profile.js";
 import MainNavigationView from "./view/main-navigation.js";
 import SortingView from "./view/sorting.js";
-import ContainerView from "./view/container.js";
-import ContentLayoutView from "./view/content-layout.js";
+import FilmsContainerView from "./view/films-container.js";
+import FilmsSectionView from "./view/films-section.js";
 import FilmCardView from "./view/film-card.js";
 import FooterStatisticsView from "./view/footer-statistics.js";
 import ShowMoreButtonView from "./view/show-more-button.js";
@@ -28,33 +28,29 @@ const renderFilmCard = (filmListElement, film) => {
     const filmPopupComponent = new FilmCardPopupView(film);
     body.classList.add(`hide-overflow`);
 
-    const closeButton = filmPopupComponent.getElement().querySelector(`.film-details__close-btn`);
-
-    closeButton.addEventListener(`click`, () => {
+    const onPopupClose = () => {
       body.classList.remove(`hide-overflow`);
       filmPopupComponent.getElement().remove();
       filmPopupComponent.removeElement();
+      closeButton.removeEventListener(`click`, onPopupClose);
+    };
 
-    });
+    const closeButton = filmPopupComponent.getCloseButton();
+
+    closeButton.addEventListener(`click`, onPopupClose);
 
     render(body, filmPopupComponent.getElement(), RenderPosition.BEFOREEND);
   };
 
   const filmCardComponent = new FilmCardView(film);
-  const filmTitle = filmCardComponent.getElement().querySelector(`.film-card__title`);
-  const filmPoster = filmCardComponent.getElement().querySelector(`.film-card__poster`);
-  const filmComments = filmCardComponent.getElement().querySelector(`.film-card__comments`);
+  const filmTitle = filmCardComponent.getFilmTitle();
+  const filmPoster = filmCardComponent.getFilmPoster();
+  const filmComments = filmCardComponent.getFilmComments();
 
-  filmTitle.addEventListener(`click`, () => {
-    onElementInteract();
-  });
-
-  filmPoster.addEventListener(`click`, () => {
-    onElementInteract();
-  });
-
-  filmComments.addEventListener(`click`, () => {
-    onElementInteract();
+  filmCardComponent.getElement().addEventListener(`click`, (evt) => {
+    if (evt.target === filmTitle || evt.target === filmPoster || evt.target === filmComments) {
+      onElementInteract();
+    }
   });
 
   render(filmListElement, filmCardComponent.getElement(), RenderPosition.BEFOREEND);
@@ -68,17 +64,17 @@ const main = body.querySelector(`.main`);
 render(main, new MainNavigationView(filters).getElement(), RenderPosition.AFTERBEGIN);
 render(main, new SortingView().getElement(), RenderPosition.BEFOREEND);
 
-const content = new ContainerView();
+const content = new FilmsContainerView();
 render(main, content.getElement(), RenderPosition.BEFOREEND);
 
-const primaryLayout = new ContentLayoutView(`All movies. Upcoming`, {hiddenTitle: true});
-primaryFilms.forEach((film) => renderFilmCard(primaryLayout.getContainer(), film));
+const primaryLayout = new FilmsSectionView(`All movies. Upcoming`, {hiddenTitle: true});
+primaryFilms.forEach((film) => renderFilmCard(primaryLayout.getFilmsContainer(), film));
 
-const topRatedLayout = new ContentLayoutView(`Top rated`, {extra: true});
-topRatedFilms.slice(0, FilmCardCount.EXTRA).forEach((film) => renderFilmCard(topRatedLayout.getContainer(), film));
+const topRatedLayout = new FilmsSectionView(`Top rated`, {extra: true});
+topRatedFilms.slice(0, FilmCardCount.EXTRA).forEach((film) => renderFilmCard(topRatedLayout.getFilmsContainer(), film));
 
-const mostCommentedLayout = new ContentLayoutView(`Most commented`, {extra: true});
-mostCommentedFilms.slice(0, FilmCardCount.EXTRA).forEach((film) => renderFilmCard(mostCommentedLayout.getContainer(), film));
+const mostCommentedLayout = new FilmsSectionView(`Most commented`, {extra: true});
+mostCommentedFilms.slice(0, FilmCardCount.EXTRA).forEach((film) => renderFilmCard(mostCommentedLayout.getFilmsContainer(), film));
 
 render(content.getElement(), primaryLayout.getElement(), RenderPosition.BEFOREEND);
 render(content.getElement(), topRatedLayout.getElement(), RenderPosition.BEFOREEND);
@@ -96,7 +92,7 @@ if (films.length > FilmCardCount.DEFAULT) {
 
     films
       .slice(renderedFilmCount, renderedFilmCount + FilmCardCount.DEFAULT)
-      .forEach((film) => renderFilmCard(primaryLayout.getContainer(), film));
+      .forEach((film) => renderFilmCard(primaryLayout.getFilmsContainer(), film));
 
     renderedFilmCount += FilmCardCount.DEFAULT;
 

@@ -1,6 +1,6 @@
 import CommentView from "./comment.js";
 import SelectEmojiView from "./select-emoji.js";
-import {EMOJI_LIST} from "../constants.js";
+import {EMOJIS} from "../constants.js";
 import {createElement} from "../utils.js";
 
 const COMMENTS_CONTAINER_CLASSNAME = `film-details__comments-list`;
@@ -41,10 +41,9 @@ export default class CommentList {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
-      const commentListWrapper = this._element.querySelector(`.${COMMENTS_CONTAINER_CLASSNAME}`);
-      this._comments.forEach((comment) => commentListWrapper.appendChild(new CommentView(comment).getElement()));
-      const selectListWrapper = this._element.querySelector(`.${SELECT_EMOJI_CONTAINER_CLASSNAME}`);
-      EMOJI_LIST.forEach((emoji) => selectListWrapper.appendChild(new SelectEmojiView(emoji, false).getElement()));
+
+      this.renderComments();
+      this.renderEmojis();
     }
 
     return this._element;
@@ -52,5 +51,17 @@ export default class CommentList {
 
   removeElement() {
     this._element = null;
+  }
+
+  renderComments() {
+    const commentListWrapper = this._element.querySelector(`.${COMMENTS_CONTAINER_CLASSNAME}`);
+
+    this._comments.forEach((comment) => commentListWrapper.appendChild(new CommentView(comment).getElement()));
+  }
+
+  renderEmojis() {
+    const selectListWrapper = this._element.querySelector(`.${SELECT_EMOJI_CONTAINER_CLASSNAME}`);
+
+    EMOJIS.forEach((emoji) => selectListWrapper.appendChild(new SelectEmojiView(emoji, false).getElement()));
   }
 }
