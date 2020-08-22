@@ -1,17 +1,19 @@
-import {createCommentTemplate} from "./comment.js";
-import {createSelectEmojiTemplate} from "./select-emoji.js";
+import CommentView from "./comment.js";
+import SelectEmojiView from "./select-emoji.js";
+import {EMOJIS} from "../constants.js";
+import {createElement} from "../utils.js";
 
-export const createCommentListTemplate = (comments) => {
+const COMMENTS_CONTAINER_CLASSNAME = `film-details__comments-list`;
+const SELECT_EMOJI_CONTAINER_CLASSNAME = `film-details__emoji-list`;
+
+const createCommentListTemplate = (comments) => {
   const commentsAmount = comments.length;
-  const commentList = comments.map(createCommentTemplate);
 
   return (
     `<section class="film-details__comments-wrap">
       <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsAmount}</span></h3>
 
-      <ul class="film-details__comments-list">
-        ${commentList.join(``)}
-      </ul>
+      <ul class="${COMMENTS_CONTAINER_CLASSNAME}"></ul>
 
       <div class="film-details__new-comment">
         <div for="add-emoji" class="film-details__add-emoji-label"></div>
@@ -20,13 +22,46 @@ export const createCommentListTemplate = (comments) => {
           <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
         </label>
 
-        <div class="film-details__emoji-list">
-          ${createSelectEmojiTemplate(`smile`, false)}
-          ${createSelectEmojiTemplate(`sleeping`, false)}
-          ${createSelectEmojiTemplate(`puke`, false)}
-          ${createSelectEmojiTemplate(`angry`, false)}
-        </div>
+        <div class="${SELECT_EMOJI_CONTAINER_CLASSNAME}"></div>
       </div>
     </section>`
   );
 };
+
+export default class CommentList {
+  constructor(comments) {
+    this._comments = comments;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createCommentListTemplate(this._comments);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+
+      this.renderComments();
+      this.renderEmojis();
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+
+  renderComments() {
+    const commentListWrapper = this._element.querySelector(`.${COMMENTS_CONTAINER_CLASSNAME}`);
+
+    this._comments.forEach((comment) => commentListWrapper.appendChild(new CommentView(comment).getElement()));
+  }
+
+  renderEmojis() {
+    const selectListWrapper = this._element.querySelector(`.${SELECT_EMOJI_CONTAINER_CLASSNAME}`);
+
+    EMOJIS.forEach((emoji) => selectListWrapper.appendChild(new SelectEmojiView(emoji, false).getElement()));
+  }
+}

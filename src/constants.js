@@ -1,3 +1,5 @@
+export const EMOJIS = [`smile`, `sleeping`, `angry`, `puke`];
+
 export const FilmCardCount = {
   MOCK_COUNT: 20,
   DEFAULT: 5,
@@ -9,3 +11,20 @@ export const EmojiSize = {
   LARGE: 55
 };
 
+export const DateFormat = {
+  /**
+   * YYYY/M/D HH:MM
+   */
+  TIMESTAMP: [`zh-Hans-CN`, {minute: `numeric`, hour: `numeric`, hour12: false}],
+  /**
+   * D MONTH YYYY
+   */
+  CALENDAR: [`en-GB`, {year: `numeric`, day: `numeric`, month: `long`}]
+};
+
+export const FilterTitle = {
+  ALL: `all`,
+  WATCHLIST: `watchlist`,
+  HISTORY: `history`,
+  FAVORITES: `favorites`
+};
