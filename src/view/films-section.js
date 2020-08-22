@@ -3,9 +3,10 @@ import {createElement} from "../utils.js";
 const FILMS_CONTAINER_CLASSNAME = `films-list__container`;
 
 const createFilmsSectionTemplate = (title, options) => {
-  const {extra, hiddenTitle} = options;
+  const {extra, hiddenTitle, noContainer} = options;
   const className = extra ? `films-list--extra` : `films-list`;
   const titleClassNames = [`films-list__title`];
+  const containerHtml = noContainer ? `` : `<div class="${FILMS_CONTAINER_CLASSNAME}"></div>`;
 
   if (hiddenTitle) {
     titleClassNames.push(`visually-hidden`);
@@ -14,7 +15,7 @@ const createFilmsSectionTemplate = (title, options) => {
   return (
     `<section class="${className}">
       <h2 class="${titleClassNames.join(` `)}">${title}</h2>
-      <div class="${FILMS_CONTAINER_CLASSNAME}"></div>
+      ${containerHtml}
     </section>`
   );
 };
@@ -38,11 +39,11 @@ export default class FilmsSection {
     return this._element;
   }
 
-  getFilmsContainer() {
-    return this.getElement().querySelector(`.${FILMS_CONTAINER_CLASSNAME}`);
-  }
-
   removeElement() {
     this._element = null;
+  }
+
+  getFilmsContainer() {
+    return this.getElement().querySelector(`.${FILMS_CONTAINER_CLASSNAME}`);
   }
 }
