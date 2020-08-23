@@ -14,12 +14,6 @@ import {generateFilmCard} from "./mock/film-card.js";
 import {generateFilter} from "./mock/filter.js";
 
 const films = new Array(FilmCardCount.MOCK_COUNT).fill().map(generateFilmCard);
-const topRatedFilms = sortBy(films, (film) => film.rating);
-const mostCommentedFilms = sortBy(films, (film) => film.comments.length);
-const primaryFilms = films.length > FilmCardCount.DEFAULT
-  ? films.slice(0, FilmCardCount.DEFAULT)
-  : films;
-
 const filters = generateFilter(films);
 
 const renderFilmCard = (filmListElement, film) => {
@@ -35,9 +29,18 @@ const renderFilmCard = (filmListElement, film) => {
       closeButton.removeEventListener(`click`, onPopupClose);
     };
 
+    const onEscKeyDown = (evt) => {
+      if (evt.key === `Escape` || evt.key === `Esc`) {
+        evt.preventDefault();
+        onPopupClose();
+        document.removeEventListener(`keydown`, onEscKeyDown);
+      }
+    };
+
     const closeButton = filmPopupComponent.getCloseButton();
 
     closeButton.addEventListener(`click`, onPopupClose);
+    document.addEventListener(`keydown`, onEscKeyDown);
 
     render(body, filmPopupComponent.getElement(), RenderPosition.BEFOREEND);
   };
@@ -67,40 +70,51 @@ render(main, new SortingView().getElement(), RenderPosition.BEFOREEND);
 const content = new FilmsContainerView();
 render(main, content.getElement(), RenderPosition.BEFOREEND);
 
-const primaryLayout = new FilmsSectionView(`All movies. Upcoming`, {hiddenTitle: true});
-primaryFilms.forEach((film) => renderFilmCard(primaryLayout.getFilmsContainer(), film));
+if (!films.length) {
+  const noFilmLayout = new FilmsSectionView(`There are no movies in our database`, {hiddenTitle: false, noContainer: true});
+  render(content.getElement(), noFilmLayout.getElement(), RenderPosition.AFTERBEGIN);
+} else {
+  const topRatedFilms = sortBy(films, (film) => film.rating);
+  const mostCommentedFilms = sortBy(films, (film) => film.comments.length);
+  const primaryFilms = films.length > FilmCardCount.DEFAULT
+    ? films.slice(0, FilmCardCount.DEFAULT)
+    : films;
 
-const topRatedLayout = new FilmsSectionView(`Top rated`, {extra: true});
-topRatedFilms.slice(0, FilmCardCount.EXTRA).forEach((film) => renderFilmCard(topRatedLayout.getFilmsContainer(), film));
+  const primaryLayout = new FilmsSectionView(`All movies. Upcoming`, {hiddenTitle: true});
+  primaryFilms.forEach((film) => renderFilmCard(primaryLayout.getFilmsContainer(), film));
 
-const mostCommentedLayout = new FilmsSectionView(`Most commented`, {extra: true});
-mostCommentedFilms.slice(0, FilmCardCount.EXTRA).forEach((film) => renderFilmCard(mostCommentedLayout.getFilmsContainer(), film));
+  const topRatedLayout = new FilmsSectionView(`Top rated`, {extra: true});
+  topRatedFilms.slice(0, FilmCardCount.EXTRA).forEach((film) => renderFilmCard(topRatedLayout.getFilmsContainer(), film));
 
-render(content.getElement(), primaryLayout.getElement(), RenderPosition.BEFOREEND);
-render(content.getElement(), topRatedLayout.getElement(), RenderPosition.BEFOREEND);
-render(content.getElement(), mostCommentedLayout.getElement(), RenderPosition.BEFOREEND);
+  const mostCommentedLayout = new FilmsSectionView(`Most commented`, {extra: true});
+  mostCommentedFilms.slice(0, FilmCardCount.EXTRA).forEach((film) => renderFilmCard(mostCommentedLayout.getFilmsContainer(), film));
 
-if (films.length > FilmCardCount.DEFAULT) {
-  const moreButtonView = new ShowMoreButtonView();
+  render(content.getElement(), primaryLayout.getElement(), RenderPosition.BEFOREEND);
+  render(content.getElement(), topRatedLayout.getElement(), RenderPosition.BEFOREEND);
+  render(content.getElement(), mostCommentedLayout.getElement(), RenderPosition.BEFOREEND);
 
-  let renderedFilmCount = FilmCardCount.DEFAULT;
+  if (films.length > FilmCardCount.DEFAULT) {
+    const moreButtonView = new ShowMoreButtonView();
 
-  render(primaryLayout.getElement(), moreButtonView.getElement(), RenderPosition.BEFOREEND);
+    let renderedFilmCount = FilmCardCount.DEFAULT;
 
-  moreButtonView.getElement().addEventListener(`click`, (evt) => {
-    evt.preventDefault();
+    render(primaryLayout.getElement(), moreButtonView.getElement(), RenderPosition.BEFOREEND);
 
-    films
-      .slice(renderedFilmCount, renderedFilmCount + FilmCardCount.DEFAULT)
-      .forEach((film) => renderFilmCard(primaryLayout.getFilmsContainer(), film));
+    moreButtonView.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
 
-    renderedFilmCount += FilmCardCount.DEFAULT;
+      films
+        .slice(renderedFilmCount, renderedFilmCount + FilmCardCount.DEFAULT)
+        .forEach((film) => renderFilmCard(primaryLayout.getFilmsContainer(), film));
 
-    if (renderedFilmCount >= films.length) {
-      moreButtonView.getElement().remove();
-      moreButtonView.removeElement();
-    }
-  });
+      renderedFilmCount += FilmCardCount.DEFAULT;
+
+      if (renderedFilmCount >= films.length) {
+        moreButtonView.getElement().remove();
+        moreButtonView.removeElement();
+      }
+    });
+  }
 }
 
 const footerStatistics = body.querySelector(`.footer__statistics`);
