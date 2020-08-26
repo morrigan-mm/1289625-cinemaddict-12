@@ -1,5 +1,5 @@
 import {EMOJIS} from "../constants.js";
-import {getRandomInteger, getRandomBoolean} from "../utils.js";
+import {getRandomInteger, getRandomBoolean} from "../utils/common.js";
 
 const generateFilmTitle = () => {
   const filmTitles = [
