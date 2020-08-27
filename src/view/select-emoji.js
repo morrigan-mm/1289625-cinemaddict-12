@@ -1,5 +1,5 @@
+import AbstractView from "./abstract.js";
 import {EmojiSize} from "../constants.js";
-import {createElement} from "../utils.js";
 import EmojiView from "./emoji.js";
 
 const EMOJI_CONTAINER_CLASSNAME = `film-details__emoji-label`;
@@ -19,30 +19,21 @@ const createSelectEmojiTemplate = (emoji, active) => {
   );
 };
 
-export default class SelectEmoji {
+export default class SelectEmoji extends AbstractView {
   constructor(emoji, active) {
+    super();
+
     this._emoji = emoji;
     this._active = active;
-    this._element = null;
   }
 
   getTemplate() {
     return createSelectEmojiTemplate(this._emoji, this._active);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
+  _afterElementCreate() {
+    const wrapper = this._element.querySelector(`.${EMOJI_CONTAINER_CLASSNAME}`);
 
-      const wrapper = this._element.querySelector(`.${EMOJI_CONTAINER_CLASSNAME}`);
-
-      wrapper.appendChild(new EmojiView(this._emoji, EmojiSize.SMALL).getElement());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+    wrapper.appendChild(new EmojiView(this._emoji, EmojiSize.SMALL).getElement());
   }
 }

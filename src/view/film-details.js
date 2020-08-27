@@ -1,5 +1,6 @@
+import AbstractView from "./abstract.js";
 import {DateFormat} from "../constants.js";
-import {createElement, capitalize, formatDate} from "../utils.js";
+import {capitalize, formatDate} from "../utils/common.js";
 
 const createGenresTemplate = (genres) => {
   return genres
@@ -79,25 +80,14 @@ const createFilmDetailsTemplate = (film) => {
   );
 };
 
-export default class FilmDetails {
+export default class FilmDetails extends AbstractView {
   constructor(film) {
+    super();
+
     this._film = film;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmDetailsTemplate(this._film);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

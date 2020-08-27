@@ -1,6 +1,7 @@
+import AbstractView from "./abstract.js";
 import EmojiView from "./emoji.js";
 import {EmojiSize, DateFormat} from "../constants.js";
-import {formatDate, createElement} from "../utils.js";
+import {formatDate} from "../utils/common.js";
 
 const EMOJI_CONTAINER_CLASSNAME = `film-details__comment-emoji`;
 
@@ -22,27 +23,22 @@ const createCommentTemplate = (comment) => {
   );
 };
 
-export default class Comment {
+export default class Comment extends AbstractView {
   constructor(comment) {
+    super();
+
     this._comment = comment;
     this._emoji = comment.emoji;
     this._element = null;
   }
 
-  getTemplate() {
-    return createCommentTemplate(this._comment);
+  _afterElementCreate() {
+    const emojiWrapper = this._element.querySelector(`.${EMOJI_CONTAINER_CLASSNAME}`);
+    emojiWrapper.appendChild(new EmojiView(this._emoji, EmojiSize.LARGE).getElement());
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-
-      const emojiWrapper = this._element.querySelector(`.${EMOJI_CONTAINER_CLASSNAME}`);
-
-      emojiWrapper.appendChild(new EmojiView(this._emoji, EmojiSize.LARGE).getElement());
-    }
-
-    return this._element;
+  getTemplate() {
+    return createCommentTemplate(this._comment);
   }
 
   removeElement() {

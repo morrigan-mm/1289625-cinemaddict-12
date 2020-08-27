@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
 
 const createEmojiTemplate = (emoji, size) => {
   return (
@@ -6,26 +6,15 @@ const createEmojiTemplate = (emoji, size) => {
   );
 };
 
-export default class Emoji {
+export default class Emoji extends AbstractView {
   constructor(emoji, size) {
+    super();
+
     this._emoji = emoji;
     this._size = size;
-    this._element = null;
   }
 
   getTemplate() {
     return createEmojiTemplate(this._emoji, this._size);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

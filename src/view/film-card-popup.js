@@ -1,6 +1,6 @@
+import AbstractView from "./abstract.js";
 import CommentListView from "./comment-list.js";
 import FilmDetailsView from "./film-details.js";
-import {createElement} from "../utils.js";
 
 const FILM_DETAILS_CONTAINER_CLASSNAME = `form-details__top-container`;
 const COMMENTS_CONTAINER_CLASSNAME = `form-details__bottom-container`;
@@ -37,10 +37,11 @@ const createFilmCardPopupTemplate = (film) => {
   );
 };
 
-export default class FilmCardPopup {
+export default class FilmCardPopup extends AbstractView {
   constructor(film) {
+    super();
+
     this._film = film;
-    this._element = null;
     this._film.comments = film.comments;
   }
 
@@ -48,19 +49,9 @@ export default class FilmCardPopup {
     return createFilmCardPopupTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-
-      this.renderFilmDetails();
-      this.renderComments();
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  _afterElementCreate() {
+    this.renderFilmDetails();
+    this.renderComments();
   }
 
   getCloseButton() {

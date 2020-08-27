@@ -1,7 +1,7 @@
+import AbstractView from "./abstract.js";
 import CommentView from "./comment.js";
 import SelectEmojiView from "./select-emoji.js";
 import {EMOJIS} from "../constants.js";
-import {createElement} from "../utils.js";
 
 const COMMENTS_CONTAINER_CLASSNAME = `film-details__comments-list`;
 const SELECT_EMOJI_CONTAINER_CLASSNAME = `film-details__emoji-list`;
@@ -28,25 +28,20 @@ const createCommentListTemplate = (comments) => {
   );
 };
 
-export default class CommentList {
+export default class CommentList extends AbstractView {
   constructor(comments) {
+    super();
     this._comments = comments;
     this._element = null;
   }
 
-  getTemplate() {
-    return createCommentListTemplate(this._comments);
+  _afterElementCreate() {
+    this.renderComments();
+    this.renderEmojis();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-
-      this.renderComments();
-      this.renderEmojis();
-    }
-
-    return this._element;
+  getTemplate() {
+    return createCommentListTemplate(this._comments);
   }
 
   removeElement() {
