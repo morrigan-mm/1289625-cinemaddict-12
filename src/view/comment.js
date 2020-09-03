@@ -32,7 +32,7 @@ export default class Comment extends AbstractView {
     this._element = null;
   }
 
-  _afterElementCreate() {
+  afterElementCreate() {
     const emojiWrapper = this._element.querySelector(`.${EMOJI_CONTAINER_CLASSNAME}`);
 
     emojiWrapper.appendChild(new EmojiView(this._emoji, EmojiSize.LARGE).getElement());

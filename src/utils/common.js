@@ -22,3 +22,22 @@ export const getRandomBoolean = () => {
 export const sortBy = (array, fn) => {
   return array.slice().sort((a, b) => fn(b) - fn(a));
 };
+
+export const copy = (obj) => {
+  return Object.assign({}, obj);
+};
+
+export const update = (obj, upd) => {
+  return Object.assign({}, obj, upd);
+};
+
+export const updateListItem = (list, item) => {
+  const index = list.findIndex((it) => it.id === item.id);
+
+  if (index === -1) {
+    return list;
+  }
+
+  return [...list.slice(0, index), item, ...list.slice(index + 1)];
+};
+

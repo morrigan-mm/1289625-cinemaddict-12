@@ -1,6 +1,8 @@
 import {EMOJIS} from "../constants.js";
 import {getRandomInteger, getRandomBoolean} from "../utils/common.js";
 
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 const generateFilmTitle = () => {
   const filmTitles = [
     `Made for each other`,
@@ -101,6 +103,7 @@ const generateCommentList = () => {
 
 export const generateFilmCard = () => {
   return {
+    id: generateId(),
     title: generateFilmTitle(),
     originalTitle: generateFilmTitle(),
     poster: generateFilmPoster(),

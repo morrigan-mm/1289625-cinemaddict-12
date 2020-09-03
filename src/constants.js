@@ -34,3 +34,20 @@ export const SortType = {
   DATE: `date`,
   RATING: `rating`
 };
+
+export const FilmCardControl = {
+  WATCHLIST: `watchlist`,
+  WATCHED: `watched`,
+  FAVORITE: `favorite`
+};
+
+export const UpdateType = {
+  MINOR: `MINOR`,
+  MAJOR: `MAJOR`,
+};
+
+export const UserAction = {
+  TOGGLE_WATCHLIST: `TOGGLE_WATCHLIST`,
+  TOGGLE_WATCHED: `TOGGLE_WATCHED`,
+  TOGGLE_FAVORITE: `TOGGLE_FAVORITE`,
+};
