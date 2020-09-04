@@ -34,8 +34,8 @@ const createCommentListTemplate = (comments) => {
 export default class CommentList extends AbstractView {
   constructor(comments) {
     super();
+
     this._comments = comments;
-    this._element = null;
   }
 
   afterElementCreate() {
@@ -45,10 +45,6 @@ export default class CommentList extends AbstractView {
 
   getTemplate() {
     return createCommentListTemplate(this._comments);
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   renderComments() {
@@ -61,22 +57,24 @@ export default class CommentList extends AbstractView {
     const selectListWrapper = this._element.querySelector(`.${SELECT_EMOJI_CONTAINER_CLASSNAME}`);
     const selectEmojiLabel = this._element.querySelector(`.${SELECT_EMOJI_LABEL}`);
 
-    let emojiView;
-
     EMOJIS.forEach((emoji) => {
       const view = new SelectEmojiView(emoji, false);
 
       view.setSelectHandler(() => {
-        if (emojiView) {
-          remove(emojiView);
-        }
-
-        emojiView = new EmojiView(emoji, EmojiSize.LARGE);
-
-        selectEmojiLabel.appendChild(emojiView.getElement());
+        this.setActiveEmoji(selectEmojiLabel, emoji);
       });
 
       selectListWrapper.appendChild(view.getElement());
     });
+  }
+
+  setActiveEmoji(container, emoji) {
+    if (this.activeEmojiView) {
+      remove(this.activeEmojiView);
+    }
+
+    this.activeEmojiView = new EmojiView(emoji, EmojiSize.LARGE);
+
+    container.appendChild(this.activeEmojiView.getElement());
   }
 }

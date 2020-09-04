@@ -1,35 +1,42 @@
 import FilmCardPopupView from "../view/film-card-popup.js";
-
 import {render, RenderPosition, remove} from "../utils/render.js";
 import {isEscKey} from "../utils/keyboard.js";
+import {UserAction} from "../constants.js";
 
 export default class FilmCardPopup {
-  constructor(film) {
-    const view = new FilmCardPopupView(film);
-
+  constructor(film, onUserAction) {
     this._film = film;
+
     this._filmCardPopupComponent = new FilmCardPopupView(film);
+    this._onUserAction = onUserAction;
 
-    this._popupCloseHandler = this._popupCloseHandler.bind(this);
-    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
-
-    this.setWatchListChangeHandler = view.setWatchListChangeHandler.bind(view);
-    this.setWatchedChangeHandler = view.setWatchedChangeHandler.bind(view);
-    this.setFavoriteChangeHandler = view.setFavoriteChangeHandler.bind(view);
+    this._handlePopupClose = this._handlePopupClose.bind(this);
+    this._handleEscKeyDown = this._handleEscKeyDown.bind(this);
+    this._handleWatchListChange = this._handleWatchListChange.bind(this);
+    this._handleWatchedChange = this._handleWatchedChange.bind(this);
+    this._handleFavoriteChange = this._handleFavoriteChange.bind(this);
   }
 
   render() {
     document.body.classList.add(`hide-overflow`);
 
-    document.addEventListener(`keydown`, this._escKeyDownHandler);
+    document.addEventListener(`keydown`, this._handleEscKeyDown);
 
     render(document.body, this._filmCardPopupComponent, RenderPosition.BEFOREEND);
+
+    this._filmCardPopupComponent.setWatchListChangeHandler(this._handleWatchListChange);
+    this._filmCardPopupComponent.setWatchedChangeHandler(this._handleWatchedChange);
+    this._filmCardPopupComponent.setFavoriteChangeHandler(this._handleFavoriteChange);
 
     this._initCloseButton();
   }
 
   close() {
+    this._closeButton.removeEventListener(`click`, this._handlePopupClose);
+
     remove(this._filmCardPopupComponent);
+
+    document.removeEventListener(`keydown`, this._handleEscKeyDown);
     document.body.classList.remove(`hide-overflow`);
   }
 
@@ -37,27 +44,37 @@ export default class FilmCardPopup {
     return document.body.classList.contains(`hide-overflow`);
   }
 
-  updateData(update, justDataUpdating) {
-    this._filmCardPopupComponent.updateData(update, justDataUpdating);
+  updateData(update) {
+    this._filmCardPopupComponent.updateData(update);
 
     this._initCloseButton();
   }
 
   _initCloseButton() {
     this._closeButton = this._filmCardPopupComponent.getCloseButton();
-    this._closeButton.addEventListener(`click`, this._popupCloseHandler);
+    this._closeButton.addEventListener(`click`, this._handlePopupClose);
   }
 
-  _popupCloseHandler() {
-    this._closeButton.removeEventListener(`click`, this._popupCloseHandler);
+  _handlePopupClose() {
     this.close();
   }
 
-  _escKeyDownHandler(evt) {
+  _handleEscKeyDown(evt) {
     if (isEscKey(evt)) {
       evt.preventDefault();
-      this._popupCloseHandler();
-      document.removeEventListener(`keydown`, this._escKeyDownHandler);
+      this.close();
     }
+  }
+
+  _handleWatchListChange() {
+    this._onUserAction(UserAction.TOGGLE_WATCHLIST, this._film);
+  }
+
+  _handleWatchedChange() {
+    this._onUserAction(UserAction.TOGGLE_WATCHED, this._film);
+  }
+
+  _handleFavoriteChange() {
+    this._onUserAction(UserAction.TOGGLE_FAVORITE, this._film);
   }
 }

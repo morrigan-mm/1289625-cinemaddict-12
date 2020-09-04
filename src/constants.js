@@ -47,6 +47,7 @@ export const UpdateType = {
 };
 
 export const UserAction = {
+  CLICK_CARD: `CLICK_CARD`,
   TOGGLE_WATCHLIST: `TOGGLE_WATCHLIST`,
   TOGGLE_WATCHED: `TOGGLE_WATCHED`,
   TOGGLE_FAVORITE: `TOGGLE_FAVORITE`,

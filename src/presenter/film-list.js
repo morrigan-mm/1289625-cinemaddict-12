@@ -3,12 +3,10 @@ import AllFilmsView from "../view/all-films.js";
 import NoFilmsView from "../view/no-films.js";
 import TopRatedFilmsView from "../view/top-rated-films.js";
 import MostCommentedFilmsView from "../view/most-commented-films.js";
-import FilmCardView from "../view/film-card.js";
 import ShowMoreButtonView from "../view/show-more-button.js";
 import SortingView from "../view/sorting.js";
-
+import FilmCardPresenter from "./film-card.js";
 import FilmCardPopupPresenter from "./film-card-popup.js";
-
 import {FilmCardCount, SortType, UserAction} from "../constants.js";
 import {render, RenderPosition, remove} from "../utils/render.js";
 import {sortBy, update} from "../utils/common.js";
@@ -19,7 +17,7 @@ export default class FilmList {
     this._filmsModel = filmsModel;
 
     this._filmCards = {};
-    // this._allFilms = [];
+
     this._renderedFilmsCount = FilmCardCount.DEFAULT;
     this._sortType = SortType.DEFAULT;
 
@@ -31,7 +29,7 @@ export default class FilmList {
     this._showMoreButtonComponent = new ShowMoreButtonView();
     this._noFilmsComponent = new NoFilmsView();
 
-    this._updateFilm = this._updateFilm.bind(this);
+    this._handleUserAction = this._handleUserAction.bind(this);
     this._handleFilmsModelChange = this._handleFilmsModelChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
@@ -58,14 +56,16 @@ export default class FilmList {
     this._renderContent();
   }
 
-  _updateFilm(updated) {
-    throw new Error(`Not implemented: updateFilm`, updated);
+  _updateFilm(filmId, getUpdate) {
+    const currentFilm = this._filmsModel.getFilm(filmId);
+    const newFilm = update(currentFilm, getUpdate(currentFilm));
+    this._filmsModel.updateFilm(newFilm);
   }
 
   _handleFilmsModelChange(film) {
-    const filmCardViews = this._filmCards[film.id];
+    const filmCards = this._filmCards[film.id];
 
-    filmCardViews.forEach((smartView) => smartView.updateData(film));
+    filmCards.forEach((filmCard) => filmCard.updateData(film));
 
     if (this._filmCardPopup && this._filmCardPopup.isOpen()) {
       this._filmCardPopup.updateData(film);
@@ -95,14 +95,14 @@ export default class FilmList {
 
     this._renderAllFilms();
 
-    const areRatedFilms = films.some((film) => film.rating !== 0);
-    const areCommentedFilms = films.some((film) => film.comments.length !== 0);
+    const hasFilmsRating = films.some((film) => film.rating !== 0);
+    const hasFilmsComments = films.some((film) => film.comments.length !== 0);
 
-    if (areRatedFilms) {
+    if (hasFilmsRating) {
       this._renderTopRatedFilms();
     }
 
-    if (areCommentedFilms) {
+    if (hasFilmsComments) {
       this._renderMostCommentedFilms();
     }
   }
@@ -117,6 +117,23 @@ export default class FilmList {
     this._renderedFilmsCount = FilmCardCount.DEFAULT;
   }
 
+  _handleUserAction(userAction, payload) {
+    switch (userAction) {
+      case UserAction.CLICK_CARD:
+        this._renderPopup(payload.id);
+        break;
+      case UserAction.TOGGLE_FAVORITE:
+        this._updateFilm(payload.id, ({isFavorite}) => ({isFavorite: !isFavorite}));
+        break;
+      case UserAction.TOGGLE_WATCHED:
+        this._updateFilm(payload.id, ({isWatched}) => ({isWatched: !isWatched}));
+        break;
+      case UserAction.TOGGLE_WATCHLIST:
+        this._updateFilm(payload.id, ({isAddedToWatchList}) => ({isAddedToWatchList: !isAddedToWatchList}));
+        break;
+    }
+  }
+
   _renderAllFilms() {
     const filmsCount = this._getFilms().length;
     const films = this._getFilms().slice(0, Math.min(filmsCount, FilmCardCount.DEFAULT));
@@ -128,6 +145,18 @@ export default class FilmList {
     }
 
     render(this._filmListComponent, this._allFilmsComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  _renderPopup(filmId) {
+    const currentFilm = this._filmsModel.getFilm(filmId);
+
+    if (this._filmCardPopup && this._filmCardPopup.isOpen()) {
+      this._filmCardPopup.close();
+    }
+
+    this._filmCardPopup = new FilmCardPopupPresenter(currentFilm, this._handleUserAction);
+
+    this._filmCardPopup.render();
   }
 
   _renderTopRatedFilms() {
@@ -151,74 +180,12 @@ export default class FilmList {
   }
 
   _renderFilmCard(filmListElement, film) {
-    const filmCardComponent = new FilmCardView(film);
+    const filmCard = new FilmCardPresenter(filmListElement, film, this._handleUserAction);
 
-    const onElementInteract = () => {
-      const currentFilm = this._filmsModel.getFilm(film.id);
-
-      if (this._filmCardPopup && this._filmCardPopup.isOpen()) {
-        this._filmCardPopup.close();
-      }
-
-      this._filmCardPopup = new FilmCardPopupPresenter(currentFilm);
-
-      this._filmCardPopup.setWatchListChangeHandler(() => {
-        onUserAction(UserAction.TOGGLE_WATCHLIST);
-      });
-
-      this._filmCardPopup.setWatchedChangeHandler(() => {
-        onUserAction(UserAction.TOGGLE_WATCHED);
-      });
-
-      this._filmCardPopup.setFavoriteChangeHandler(() => {
-        onUserAction(UserAction.TOGGLE_FAVORITE);
-      });
-
-      this._filmCardPopup.render();
-    };
-
-    const onUserAction = (userAction) => {
-      const currentFilm = this._filmsModel.getFilm(film.id);
-
-      let newFilm;
-
-      switch (userAction) {
-        case UserAction.TOGGLE_FAVORITE:
-          newFilm = update(currentFilm, {isFavorite: !currentFilm.isFavorite});
-          break;
-        case UserAction.TOGGLE_WATCHED:
-          newFilm = update(currentFilm, {isWatched: !currentFilm.isWatched});
-          break;
-        case UserAction.TOGGLE_WATCHLIST:
-          newFilm = update(currentFilm, {isAddedToWatchList: !currentFilm.isAddedToWatchList});
-          break;
-      }
-
-      if (newFilm) {
-        this._filmsModel.updateFilm(newFilm);
-      }
-    };
-
-    filmCardComponent.setWatchListClickHandler(() => {
-      onUserAction(UserAction.TOGGLE_WATCHLIST);
-    });
-
-    filmCardComponent.setWatchedClickHandler(() => {
-      onUserAction(UserAction.TOGGLE_WATCHED);
-    });
-
-    filmCardComponent.setFavoriteClickHandler(() => {
-      onUserAction(UserAction.TOGGLE_FAVORITE);
-    });
-
-    filmCardComponent.setFilmDetailsClickHandler(() => {
-      onElementInteract();
-    });
+    filmCard.render();
 
     this._filmCards[film.id] = this._filmCards[film.id] || [];
-    this._filmCards[film.id].push(filmCardComponent);
-
-    render(filmListElement, filmCardComponent, RenderPosition.BEFOREEND);
+    this._filmCards[film.id].push(filmCard);
   }
 
   _handleShowMoreButtonClick() {

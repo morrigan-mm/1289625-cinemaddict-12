@@ -55,10 +55,10 @@ export default class FilmCard extends SmartView {
     this._data = copy(film);
     this._maxDescLength = maxDescLength;
 
+    this._handleCardClick = this._handleCardClick.bind(this);
     this._handleWatchListClick = this._handleWatchListClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
-    this._handleFilmDetailsClick = this._handleFilmDetailsClick.bind(this);
   }
 
   getTemplate() {
@@ -78,10 +78,10 @@ export default class FilmCard extends SmartView {
   }
 
   restoreHandlers() {
-    const {click, clickFavorite, clickWatchList, clickWatched} = this._callback;
+    const {clickCard, clickFavorite, clickWatchList, clickWatched} = this._callback;
 
-    if (click) {
-      this.setFilmDetailsClickHandler(click);
+    if (clickCard) {
+      this.setCardClickHandler(clickCard);
     }
 
     if (clickWatchList) {
@@ -97,13 +97,13 @@ export default class FilmCard extends SmartView {
     }
   }
 
-  _handleFilmDetailsClick(evt) {
+  _handleCardClick(evt) {
     const filmTitle = this.getFilmTitle();
     const filmPoster = this.getFilmPoster();
     const filmComments = this.getFilmComments();
 
     if (evt.target === filmTitle || evt.target === filmPoster || evt.target === filmComments) {
-      this._callback.click();
+      this._callback.clickCard();
     }
   }
 
@@ -137,8 +137,8 @@ export default class FilmCard extends SmartView {
     this.getElement().querySelector(`[data-control="${FilmCardControl.FAVORITE}"]`).addEventListener(`click`, this._handleFavoriteClick);
   }
 
-  setFilmDetailsClickHandler(callback) {
-    this._callback.click = callback;
-    this.getElement().addEventListener(`click`, this._handleFilmDetailsClick);
+  setCardClickHandler(callback) {
+    this._callback.clickCard = callback;
+    this.getElement().addEventListener(`click`, this._handleCardClick);
   }
 }

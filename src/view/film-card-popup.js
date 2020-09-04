@@ -93,17 +93,17 @@ export default class FilmCardPopup extends SmartView {
 
   setWatchListChangeHandler(callback) {
     this._callback.changeWatchList = callback;
-    this.getElement().querySelector(`[name="${FilmCardControl.WATCHLIST}"]`).addEventListener(`change`, this._handleWatchListChange);
+    this.getElement().querySelector(`[for="${FilmCardControl.WATCHLIST}"]`).addEventListener(`click`, this._handleWatchListChange);
   }
 
   setWatchedChangeHandler(callback) {
     this._callback.changeWatched = callback;
-    this.getElement().querySelector(`[name="${FilmCardControl.WATCHED}"]`).addEventListener(`change`, this._handleWatchedChange);
+    this.getElement().querySelector(`[for="${FilmCardControl.WATCHED}"]`).addEventListener(`click`, this._handleWatchedChange);
   }
 
   setFavoriteChangeHandler(callback) {
     this._callback.changeFavorite = callback;
-    this.getElement().querySelector(`[name="${FilmCardControl.FAVORITE}"]`).addEventListener(`change`, this._handleFavoriteChange);
+    this.getElement().querySelector(`[for="${FilmCardControl.FAVORITE}"]`).addEventListener(`click`, this._handleFavoriteChange);
   }
 
   getCloseButton() {
