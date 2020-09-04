@@ -13,13 +13,13 @@ export const EmojiSize = {
 
 export const DateFormat = {
   /**
-   * YYYY/M/D HH:MM
+   * YYYY/MM/DD HH:MM
    */
-  TIMESTAMP: [`zh-Hans-CN`, {minute: `numeric`, hour: `numeric`, hour12: false}],
+  TIMESTAMP: `TIMESTAMP`,
   /**
    * D MONTH YYYY
    */
-  CALENDAR: [`en-GB`, {year: `numeric`, day: `numeric`, month: `long`}]
+  CALENDAR: `CALENDAR`
 };
 
 export const FilterTitle = {

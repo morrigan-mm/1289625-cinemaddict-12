@@ -77,6 +77,11 @@ const generateEmojiText = () => {
   return text[randomIndex];
 };
 
+const generateCommentDate = () => {
+  const DAY = 1000 * 60 * 60 * 24;
+  return new Date(Date.now() - getRandomInteger(0, 12 * DAY));
+};
+
 const generateDate = () => {
   const currentDate = new Date();
   currentDate.setFullYear(getRandomInteger(1915, 2020));
@@ -91,7 +96,7 @@ const generateComment = () => {
     emoji: generateEmoji(),
     text: generateEmojiText(),
     author: `John Doe`,
-    date: generateDate()
+    date: generateCommentDate()
   };
 };
 
