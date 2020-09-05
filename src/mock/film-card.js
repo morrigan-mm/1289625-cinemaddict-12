@@ -1,6 +1,8 @@
 import {EMOJIS} from "../constants.js";
 import {getRandomInteger, getRandomBoolean} from "../utils/common.js";
 
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 const generateFilmTitle = () => {
   const filmTitles = [
     `Made for each other`,
@@ -75,6 +77,11 @@ const generateEmojiText = () => {
   return text[randomIndex];
 };
 
+const generateCommentDate = () => {
+  const DAY = 1000 * 60 * 60 * 24;
+  return new Date(Date.now() - getRandomInteger(0, 12 * DAY));
+};
+
 const generateDate = () => {
   const currentDate = new Date();
   currentDate.setFullYear(getRandomInteger(1915, 2020));
@@ -89,7 +96,7 @@ const generateComment = () => {
     emoji: generateEmoji(),
     text: generateEmojiText(),
     author: `John Doe`,
-    date: generateDate()
+    date: generateCommentDate()
   };
 };
 
@@ -101,6 +108,7 @@ const generateCommentList = () => {
 
 export const generateFilmCard = () => {
   return {
+    id: generateId(),
     title: generateFilmTitle(),
     originalTitle: generateFilmTitle(),
     poster: generateFilmPoster(),

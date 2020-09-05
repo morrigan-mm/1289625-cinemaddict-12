@@ -1,9 +1,12 @@
 import AbstractView from "./abstract.js";
 import CommentView from "./comment.js";
+import EmojiView from "./emoji.js";
 import SelectEmojiView from "./select-emoji.js";
-import {EMOJIS} from "../constants.js";
+import {EMOJIS, EmojiSize} from "../constants.js";
+import {remove} from "../utils/render.js";
 
 const COMMENTS_CONTAINER_CLASSNAME = `film-details__comments-list`;
+const SELECT_EMOJI_LABEL = `film-details__add-emoji-label`;
 const SELECT_EMOJI_CONTAINER_CLASSNAME = `film-details__emoji-list`;
 
 const createCommentListTemplate = (comments) => {
@@ -16,7 +19,7 @@ const createCommentListTemplate = (comments) => {
       <ul class="${COMMENTS_CONTAINER_CLASSNAME}"></ul>
 
       <div class="film-details__new-comment">
-        <div for="add-emoji" class="film-details__add-emoji-label"></div>
+        <div for="add-emoji" class="${SELECT_EMOJI_LABEL}"></div>
 
         <label class="film-details__comment-label">
           <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -31,21 +34,17 @@ const createCommentListTemplate = (comments) => {
 export default class CommentList extends AbstractView {
   constructor(comments) {
     super();
+
     this._comments = comments;
-    this._element = null;
   }
 
-  _afterElementCreate() {
+  afterElementCreate() {
     this.renderComments();
     this.renderEmojis();
   }
 
   getTemplate() {
     return createCommentListTemplate(this._comments);
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   renderComments() {
@@ -56,7 +55,26 @@ export default class CommentList extends AbstractView {
 
   renderEmojis() {
     const selectListWrapper = this._element.querySelector(`.${SELECT_EMOJI_CONTAINER_CLASSNAME}`);
+    const selectEmojiLabel = this._element.querySelector(`.${SELECT_EMOJI_LABEL}`);
 
-    EMOJIS.forEach((emoji) => selectListWrapper.appendChild(new SelectEmojiView(emoji, false).getElement()));
+    EMOJIS.forEach((emoji) => {
+      const view = new SelectEmojiView(emoji, false);
+
+      view.setSelectHandler(() => {
+        this.setActiveEmoji(selectEmojiLabel, emoji);
+      });
+
+      selectListWrapper.appendChild(view.getElement());
+    });
+  }
+
+  setActiveEmoji(container, emoji) {
+    if (this.activeEmojiView) {
+      remove(this.activeEmojiView);
+    }
+
+    this.activeEmojiView = new EmojiView(emoji, EmojiSize.LARGE);
+
+    container.appendChild(this.activeEmojiView.getElement());
   }
 }

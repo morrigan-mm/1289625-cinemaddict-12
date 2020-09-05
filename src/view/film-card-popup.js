@@ -1,4 +1,6 @@
-import AbstractView from "./abstract.js";
+import {copy} from "../utils/common.js";
+import {FilmCardControl} from "../constants.js";
+import SmartView from "./smart.js";
 import CommentListView from "./comment-list.js";
 import FilmDetailsView from "./film-details.js";
 
@@ -6,10 +8,10 @@ const FILM_DETAILS_CONTAINER_CLASSNAME = `form-details__top-container`;
 const COMMENTS_CONTAINER_CLASSNAME = `form-details__bottom-container`;
 const CLOSE_BUTTON_CLASSNAME = `film-details__close-btn`;
 
-const createFilmPopupControlTemplate = (name, text, active) => {
+const createFilmPopupControlTemplate = (control, text, active) => {
   return (
-    `<input type="checkbox" class="film-details__control-input visually-hidden" id="${name}" name="${name}"${active ? ` checked` : ``}>
-    <label for="${name}" class="film-details__control-label film-details__control-label--${name}">${text}</label>`
+    `<input type="checkbox" class="film-details__control-input visually-hidden" id="${control}" name="${control}"${active ? ` checked` : ``}>
+    <label for="${control}" class="film-details__control-label film-details__control-label--${control}">${text}</label>`
   );
 };
 
@@ -25,9 +27,9 @@ const createFilmCardPopupTemplate = (film) => {
           </div>
 
           <section class="film-details__controls">
-            ${createFilmPopupControlTemplate(`watchlist`, `Add to watchlist`, isAddedToWatchList)}
-            ${createFilmPopupControlTemplate(`watched`, `Already watched`, isWatched)}
-            ${createFilmPopupControlTemplate(`favorite`, `Add to favorites`, isFavorite)}
+            ${createFilmPopupControlTemplate(FilmCardControl.WATCHLIST, `Add to watchlist`, isAddedToWatchList)}
+            ${createFilmPopupControlTemplate(FilmCardControl.WATCHED, `Already watched`, isWatched)}
+            ${createFilmPopupControlTemplate(FilmCardControl.FAVORITE, `Add to favorites`, isFavorite)}
           </section>
         </div>
 
@@ -37,21 +39,71 @@ const createFilmCardPopupTemplate = (film) => {
   );
 };
 
-export default class FilmCardPopup extends AbstractView {
+export default class FilmCardPopup extends SmartView {
   constructor(film) {
     super();
 
-    this._film = film;
-    this._film.comments = film.comments;
+    this._data = copy(film);
+    this._comments = film.comments.slice();
+
+    this._handleWatchListChange = this._handleWatchListChange.bind(this);
+    this._handleWatchedChange = this._handleWatchedChange.bind(this);
+    this._handleFavoriteChange = this._handleFavoriteChange.bind(this);
   }
 
   getTemplate() {
-    return createFilmCardPopupTemplate(this._film);
+    return createFilmCardPopupTemplate(this._data);
   }
 
-  _afterElementCreate() {
+  afterElementCreate() {
     this.renderFilmDetails();
     this.renderComments();
+  }
+
+  restoreHandlers() {
+    const {changeWatchList, changeWatched, changeFavorite} = this._callback;
+
+    if (changeWatchList) {
+      this.setWatchListChangeHandler(changeWatchList);
+    }
+
+    if (changeWatched) {
+      this.setWatchedChangeHandler(changeWatched);
+    }
+
+    if (changeFavorite) {
+      this.setFavoriteChangeHandler(changeFavorite);
+    }
+  }
+
+  _handleWatchListChange(evt) {
+    evt.preventDefault();
+    this._callback.changeWatchList();
+  }
+
+  _handleWatchedChange(evt) {
+    evt.preventDefault();
+    this._callback.changeWatched();
+  }
+
+  _handleFavoriteChange(evt) {
+    evt.preventDefault();
+    this._callback.changeFavorite();
+  }
+
+  setWatchListChangeHandler(callback) {
+    this._callback.changeWatchList = callback;
+    this.getElement().querySelector(`[for="${FilmCardControl.WATCHLIST}"]`).addEventListener(`click`, this._handleWatchListChange);
+  }
+
+  setWatchedChangeHandler(callback) {
+    this._callback.changeWatched = callback;
+    this.getElement().querySelector(`[for="${FilmCardControl.WATCHED}"]`).addEventListener(`click`, this._handleWatchedChange);
+  }
+
+  setFavoriteChangeHandler(callback) {
+    this._callback.changeFavorite = callback;
+    this.getElement().querySelector(`[for="${FilmCardControl.FAVORITE}"]`).addEventListener(`click`, this._handleFavoriteChange);
   }
 
   getCloseButton() {
@@ -61,12 +113,12 @@ export default class FilmCardPopup extends AbstractView {
   renderFilmDetails() {
     const filmDetailsWrapper = this._element.querySelector(`.${FILM_DETAILS_CONTAINER_CLASSNAME}`);
 
-    filmDetailsWrapper.insertBefore(new FilmDetailsView(this._film).getElement(), filmDetailsWrapper.querySelector(`.film-details__controls`));
+    filmDetailsWrapper.insertBefore(new FilmDetailsView(this._data).getElement(), filmDetailsWrapper.querySelector(`.film-details__controls`));
   }
 
   renderComments() {
     const commentsWrapper = this._element.querySelector(`.${COMMENTS_CONTAINER_CLASSNAME}`);
 
-    commentsWrapper.appendChild(new CommentListView(this._film.comments).getElement());
+    commentsWrapper.appendChild(new CommentListView(this._comments).getElement());
   }
 }

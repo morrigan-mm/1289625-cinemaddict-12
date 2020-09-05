@@ -13,13 +13,13 @@ export const EmojiSize = {
 
 export const DateFormat = {
   /**
-   * YYYY/M/D HH:MM
+   * YYYY/MM/DD HH:MM
    */
-  TIMESTAMP: [`zh-Hans-CN`, {minute: `numeric`, hour: `numeric`, hour12: false}],
+  TIMESTAMP: `TIMESTAMP`,
   /**
    * D MONTH YYYY
    */
-  CALENDAR: [`en-GB`, {year: `numeric`, day: `numeric`, month: `long`}]
+  CALENDAR: `CALENDAR`
 };
 
 export const FilterTitle = {
@@ -33,4 +33,22 @@ export const SortType = {
   DEFAULT: `default`,
   DATE: `date`,
   RATING: `rating`
+};
+
+export const FilmCardControl = {
+  WATCHLIST: `watchlist`,
+  WATCHED: `watched`,
+  FAVORITE: `favorite`
+};
+
+export const UpdateType = {
+  MINOR: `MINOR`,
+  MAJOR: `MAJOR`,
+};
+
+export const UserAction = {
+  CLICK_CARD: `CLICK_CARD`,
+  TOGGLE_WATCHLIST: `TOGGLE_WATCHLIST`,
+  TOGGLE_WATCHED: `TOGGLE_WATCHED`,
+  TOGGLE_FAVORITE: `TOGGLE_FAVORITE`,
 };

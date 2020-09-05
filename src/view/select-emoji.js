@@ -25,15 +25,27 @@ export default class SelectEmoji extends AbstractView {
 
     this._emoji = emoji;
     this._active = active;
+
+    this._handleClick = this._handleClick.bind(this);
   }
 
   getTemplate() {
     return createSelectEmojiTemplate(this._emoji, this._active);
   }
 
-  _afterElementCreate() {
+  afterElementCreate() {
     const wrapper = this._element.querySelector(`.${EMOJI_CONTAINER_CLASSNAME}`);
 
     wrapper.appendChild(new EmojiView(this._emoji, EmojiSize.SMALL).getElement());
+  }
+
+  _handleClick() {
+    this._callback.select();
+  }
+
+  setSelectHandler(callback) {
+    this._callback.select = callback;
+
+    this.getElement().querySelector(`input`).addEventListener(`click`, this._handleClick);
   }
 }
