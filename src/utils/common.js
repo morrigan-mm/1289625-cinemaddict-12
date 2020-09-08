@@ -40,6 +40,10 @@ export const formatDate = (date, format) => {
   }
 };
 
+export const formatDuration = (duration) => {
+  return moment.utc(moment.duration(duration, `minutes`).asMilliseconds()).format(`H[h] m[m]`);
+};
+
 export const capitalize = (str) => {
   return str.replace(str[0], str[0].toUpperCase());
 };
@@ -76,4 +80,3 @@ export const updateListItem = (list, item) => {
 
   return [...list.slice(0, index), item, ...list.slice(index + 1)];
 };
-

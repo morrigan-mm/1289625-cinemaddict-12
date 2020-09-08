@@ -118,7 +118,7 @@ export const generateFilmCard = () => {
     actors: `Erich von Stroheim, Mary Beth Hughes, Dan Duryea`,
     releaseDate: generateDate(),
     country: `USA`,
-    duration: `1h 32m`,
+    duration: 100,
     genres: generateFilmGenre(),
     description: generateFilmDescription(),
     rating: generateFilmRating(),

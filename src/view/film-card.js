@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import {copy} from "../utils/common.js";
+import {copy, formatDuration} from "../utils/common.js";
 import SmartView from "./smart.js";
 import {FilmCardControl} from "../constants.js";
 
@@ -27,13 +27,17 @@ const createFilmCardTemplate = (film, maxDescLength) => {
     ? `${description.slice(0, maxDescLength)}…`
     : description;
 
+  const releaseYear = new Date(releaseDate).getFullYear();
+
+  const filmDuration = formatDuration(duration);
+
   return (
     `<article class="film-card">
       <h3 class="${TITLE_CLASSNAME}">${title}</h3>
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
-        <span class="film-card__year">${releaseDate.getFullYear()}</span>
-        <span class="film-card__duration">${duration}</span>
+        <span class="film-card__year">${releaseYear}</span>
+        <span class="film-card__duration">${filmDuration}</span>
         <span class="film-card__genre">${filmGenre}</span>
       </p>
       <img src="./images/posters/${poster}" alt="" class="${POSTER_CLASSNAME}">

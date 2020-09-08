@@ -1,6 +1,6 @@
 import AbstractView from "./abstract.js";
 import {DateFormat} from "../constants.js";
-import {capitalize, formatDate} from "../utils/common.js";
+import {capitalize, formatDate, formatDuration} from "../utils/common.js";
 
 const createGenresTemplate = (genres) => {
   return genres
@@ -18,6 +18,8 @@ const createFilmDetailsTemplate = (film) => {
     : `Genre`;
 
   const genresList = createGenresTemplate(genres);
+
+  const filmDuration = formatDuration(duration);
 
   return (
     `<div class="film-details__info-wrap">
@@ -58,7 +60,7 @@ const createFilmDetailsTemplate = (film) => {
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Runtime</td>
-            <td class="film-details__cell">${duration}</td>
+            <td class="film-details__cell">${filmDuration}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Country</td>
