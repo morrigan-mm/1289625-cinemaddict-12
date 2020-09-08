@@ -28,12 +28,15 @@ const formatTimestampDate = (date) => {
 
 export const formatDate = (date, format) => {
   switch (format) {
-    case DateFormat.CALENDAR:
+    case DateFormat.CALENDAR: {
       return formatCalendarDate(date);
-    case DateFormat.TIMESTAMP:
+    }
+    case DateFormat.TIMESTAMP: {
       return formatTimestampDate(date);
-    default:
+    }
+    default: {
       return moment().format(`LLLL`);
+    }
   }
 };
 

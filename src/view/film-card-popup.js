@@ -49,6 +49,7 @@ export default class FilmCardPopup extends SmartView {
     this._handleWatchListChange = this._handleWatchListChange.bind(this);
     this._handleWatchedChange = this._handleWatchedChange.bind(this);
     this._handleFavoriteChange = this._handleFavoriteChange.bind(this);
+    this._handlePopupClose = this._handlePopupClose.bind(this);
   }
 
   getTemplate() {
@@ -61,7 +62,7 @@ export default class FilmCardPopup extends SmartView {
   }
 
   restoreHandlers() {
-    const {changeWatchList, changeWatched, changeFavorite} = this._callback;
+    const {changeWatchList, changeWatched, changeFavorite, closePopup} = this._callback;
 
     if (changeWatchList) {
       this.setWatchListChangeHandler(changeWatchList);
@@ -73,6 +74,10 @@ export default class FilmCardPopup extends SmartView {
 
     if (changeFavorite) {
       this.setFavoriteChangeHandler(changeFavorite);
+    }
+
+    if (closePopup) {
+      this.setPopupCloseHandler(closePopup);
     }
   }
 
@@ -91,6 +96,12 @@ export default class FilmCardPopup extends SmartView {
     this._callback.changeFavorite();
   }
 
+  _handlePopupClose(evt) {
+    evt.preventDefault();
+    this._callback.closePopup();
+
+  }
+
   setWatchListChangeHandler(callback) {
     this._callback.changeWatchList = callback;
     this.getElement().querySelector(`[for="${FilmCardControl.WATCHLIST}"]`).addEventListener(`click`, this._handleWatchListChange);
@@ -104,6 +115,11 @@ export default class FilmCardPopup extends SmartView {
   setFavoriteChangeHandler(callback) {
     this._callback.changeFavorite = callback;
     this.getElement().querySelector(`[for="${FilmCardControl.FAVORITE}"]`).addEventListener(`click`, this._handleFavoriteChange);
+  }
+
+  setPopupCloseHandler(callback) {
+    this._callback.closePopup = callback;
+    this.getCloseButton().addEventListener(`click`, this._handlePopupClose);
   }
 
   getCloseButton() {

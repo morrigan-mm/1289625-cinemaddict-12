@@ -27,13 +27,10 @@ export default class FilmCardPopup {
     this._filmCardPopupComponent.setWatchListChangeHandler(this._handleWatchListChange);
     this._filmCardPopupComponent.setWatchedChangeHandler(this._handleWatchedChange);
     this._filmCardPopupComponent.setFavoriteChangeHandler(this._handleFavoriteChange);
-
-    this._initCloseButton();
+    this._filmCardPopupComponent.setPopupCloseHandler(this._handlePopupClose);
   }
 
   close() {
-    this._closeButton.removeEventListener(`click`, this._handlePopupClose);
-
     remove(this._filmCardPopupComponent);
 
     document.removeEventListener(`keydown`, this._handleEscKeyDown);
@@ -46,13 +43,6 @@ export default class FilmCardPopup {
 
   updateData(update) {
     this._filmCardPopupComponent.updateData(update);
-
-    this._initCloseButton();
-  }
-
-  _initCloseButton() {
-    this._closeButton = this._filmCardPopupComponent.getCloseButton();
-    this._closeButton.addEventListener(`click`, this._handlePopupClose);
   }
 
   _handlePopupClose() {

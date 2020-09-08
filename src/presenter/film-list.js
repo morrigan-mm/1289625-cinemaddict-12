@@ -39,12 +39,15 @@ export default class FilmList {
 
   _getFilms() {
     switch (this._sortType) {
-      case SortType.DATE:
+      case SortType.DATE: {
         return sortBy(this._filmsModel.getFilms(), (film) => film.releaseDate);
-      case SortType.RATING:
+      }
+      case SortType.RATING: {
         return sortBy(this._filmsModel.getFilms(), (film) => film.rating);
-      default:
+      }
+      default: {
         return this._filmsModel.getFilms().slice();
+      }
     }
   }
 
@@ -119,18 +122,22 @@ export default class FilmList {
 
   _handleUserAction(userAction, payload) {
     switch (userAction) {
-      case UserAction.CLICK_CARD:
+      case UserAction.CLICK_CARD: {
         this._renderPopup(payload.id);
         break;
-      case UserAction.TOGGLE_FAVORITE:
+      }
+      case UserAction.TOGGLE_FAVORITE: {
         this._updateFilm(payload.id, ({isFavorite}) => ({isFavorite: !isFavorite}));
         break;
-      case UserAction.TOGGLE_WATCHED:
+      }
+      case UserAction.TOGGLE_WATCHED: {
         this._updateFilm(payload.id, ({isWatched}) => ({isWatched: !isWatched}));
         break;
-      case UserAction.TOGGLE_WATCHLIST:
+      }
+      case UserAction.TOGGLE_WATCHLIST: {
         this._updateFilm(payload.id, ({isAddedToWatchList}) => ({isAddedToWatchList: !isAddedToWatchList}));
         break;
+      }
     }
   }
 

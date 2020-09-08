@@ -79,6 +79,7 @@ const generateEmojiText = () => {
 
 const generateCommentDate = () => {
   const DAY = 1000 * 60 * 60 * 24;
+
   return new Date(Date.now() - getRandomInteger(0, 12 * DAY));
 };
 
