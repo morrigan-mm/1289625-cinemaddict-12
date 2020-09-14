@@ -28,4 +28,9 @@ export default class Abstract {
   removeElement() {
     this._element = null;
   }
+
+  shakeElement(element) {
+    element.classList.remove(`shake`);
+    setTimeout(() => element.classList.add(`shake`));
+  }
 }

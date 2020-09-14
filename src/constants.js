@@ -1,3 +1,5 @@
+export const IS_MAC = navigator.platform.toUpperCase().indexOf(`MAC`) >= 0;
+
 export const EMOJIS = [`smile`, `sleeping`, `angry`, `puke`];
 
 export const FilmCardCount = {
@@ -22,7 +24,7 @@ export const DateFormat = {
   CALENDAR: `CALENDAR`
 };
 
-export const FilterTitle = {
+export const FilterType = {
   ALL: `all`,
   WATCHLIST: `watchlist`,
   HISTORY: `history`,
@@ -47,6 +49,8 @@ export const UpdateType = {
 };
 
 export const UserAction = {
+  ADD_COMMENT: `ADD_COMMENT`,
+  DELETE_COMMENT: `DELETE_COMMENT`,
   CLICK_CARD: `CLICK_CARD`,
   TOGGLE_WATCHLIST: `TOGGLE_WATCHLIST`,
   TOGGLE_WATCHED: `TOGGLE_WATCHED`,

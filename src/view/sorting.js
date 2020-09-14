@@ -40,7 +40,7 @@ export default class Sorting extends AbstractView {
 
     const nextSortType = evt.target.dataset.sortType;
 
-    this._setSortType(nextSortType);
+    this.setSortType(nextSortType);
   }
 
   setSortTypeChangeHandler(callback) {
@@ -48,7 +48,7 @@ export default class Sorting extends AbstractView {
     this.getElement().addEventListener(`click`, this._sortTypeChangeHandler);
   }
 
-  _setSortType(sortType) {
+  setSortType(sortType) {
     const currentActive = this.getElement().querySelector(`.${ACTIVE_BUTTON_CLASSNAME}`);
     const nextActive = this.getElement().querySelector(`[data-sort-type="${sortType}"]`);
 

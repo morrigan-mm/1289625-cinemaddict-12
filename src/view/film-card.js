@@ -40,7 +40,7 @@ const createFilmCardTemplate = (film, maxDescLength) => {
         <span class="film-card__duration">${filmDuration}</span>
         <span class="film-card__genre">${filmGenre}</span>
       </p>
-      <img src="./images/posters/${poster}" alt="" class="${POSTER_CLASSNAME}">
+      <img src="${poster}" alt="" class="${POSTER_CLASSNAME}">
       <p class="film-card__description">${descriptionText}</p>
       <a class="${COMMENTS_CLASSNAME}">${commentsCount} comments</a>
       <form class="film-card__controls">
@@ -113,17 +113,26 @@ export default class FilmCard extends SmartView {
 
   _handleWatchListClick(evt) {
     evt.preventDefault();
+    this._disableButtons();
     this._callback.clickWatchList();
   }
 
   _handleWatchedClick(evt) {
     evt.preventDefault();
+    this._disableButtons();
     this._callback.clickWatched();
   }
 
   _handleFavoriteClick(evt) {
     evt.preventDefault();
+    this._disableButtons();
     this._callback.clickFavorite();
+  }
+
+  _disableButtons() {
+    this.getElement().querySelectorAll(`button`).forEach((button) => {
+      button.disabled = true;
+    });
   }
 
   setWatchListClickHandler(callback) {

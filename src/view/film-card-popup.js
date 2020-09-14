@@ -1,7 +1,5 @@
-import {copy} from "../utils/common.js";
 import {FilmCardControl} from "../constants.js";
 import SmartView from "./smart.js";
-import CommentListView from "./comment-list.js";
 import FilmDetailsView from "./film-details.js";
 
 const FILM_DETAILS_CONTAINER_CLASSNAME = `form-details__top-container`;
@@ -40,11 +38,10 @@ const createFilmCardPopupTemplate = (film) => {
 };
 
 export default class FilmCardPopup extends SmartView {
-  constructor(film) {
+  constructor({comments, film}) {
     super();
 
-    this._data = copy(film);
-    this._comments = film.comments.slice();
+    this._data = {comments, film};
 
     this._handleWatchListChange = this._handleWatchListChange.bind(this);
     this._handleWatchedChange = this._handleWatchedChange.bind(this);
@@ -53,12 +50,12 @@ export default class FilmCardPopup extends SmartView {
   }
 
   getTemplate() {
-    return createFilmCardPopupTemplate(this._data);
+    const {film} = this._data;
+    return createFilmCardPopupTemplate(film);
   }
 
   afterElementCreate() {
     this.renderFilmDetails();
-    this.renderComments();
   }
 
   restoreHandlers() {
@@ -83,23 +80,41 @@ export default class FilmCardPopup extends SmartView {
 
   _handleWatchListChange(evt) {
     evt.preventDefault();
-    this._callback.changeWatchList();
+    if (!this._inputIsDisabled(FilmCardControl.WATCHLIST)) {
+      this._callback.changeWatchList();
+    }
+    this._disableInputs();
   }
 
   _handleWatchedChange(evt) {
     evt.preventDefault();
-    this._callback.changeWatched();
+    if (!this._inputIsDisabled(FilmCardControl.WATCHED)) {
+      this._callback.changeWatched();
+    }
+    this._disableInputs();
   }
 
   _handleFavoriteChange(evt) {
     evt.preventDefault();
-    this._callback.changeFavorite();
+    if (!this._inputIsDisabled(FilmCardControl.FAVORITE)) {
+      this._callback.changeFavorite();
+    }
+    this._disableInputs();
   }
 
   _handlePopupClose(evt) {
     evt.preventDefault();
     this._callback.closePopup();
+  }
 
+  _disableInputs() {
+    this.getElement().querySelectorAll(`input`).forEach((input) => {
+      input.disabled = true;
+    });
+  }
+
+  _inputIsDisabled(id) {
+    return document.getElementById(id).disabled;
   }
 
   setWatchListChangeHandler(callback) {
@@ -126,15 +141,14 @@ export default class FilmCardPopup extends SmartView {
     return this.getElement().querySelector(`.${CLOSE_BUTTON_CLASSNAME}`);
   }
 
-  renderFilmDetails() {
-    const filmDetailsWrapper = this._element.querySelector(`.${FILM_DETAILS_CONTAINER_CLASSNAME}`);
-
-    filmDetailsWrapper.insertBefore(new FilmDetailsView(this._data).getElement(), filmDetailsWrapper.querySelector(`.film-details__controls`));
+  getCommentsContainer() {
+    return this._element.querySelector(`.${COMMENTS_CONTAINER_CLASSNAME}`);
   }
 
-  renderComments() {
-    const commentsWrapper = this._element.querySelector(`.${COMMENTS_CONTAINER_CLASSNAME}`);
+  renderFilmDetails() {
+    const {film} = this._data;
+    const filmDetailsWrapper = this._element.querySelector(`.${FILM_DETAILS_CONTAINER_CLASSNAME}`);
 
-    commentsWrapper.appendChild(new CommentListView(this._comments).getElement());
+    filmDetailsWrapper.insertBefore(new FilmDetailsView(film).getElement(), filmDetailsWrapper.querySelector(`.film-details__controls`));
   }
 }

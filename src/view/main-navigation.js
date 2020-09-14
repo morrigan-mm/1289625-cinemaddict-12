@@ -1,23 +1,23 @@
-import AbstractView from "./abstract.js";
-import {capitalize} from "../utils/common.js";
-import {FilterTitle} from "../constants.js";
+import SmartView from "./smart.js";
+
+const ACTIVE_ITEM_CLASSNAME = `main-navigation__item--active`;
 
 const createFilterItemTemplate = (filter, active) => {
-  const {title, count} = filter;
+  const {type, name, count} = filter;
   const classNames = active
-    ? `main-navigation__item main-navigation__item--active`
+    ? `main-navigation__item ${ACTIVE_ITEM_CLASSNAME}`
     : `main-navigation__item`;
 
-  if (title === FilterTitle.ALL) {
-    return `<a href="#${title}" class="${classNames}">All movies</a>`;
-  }
-  return ` <a href="#${title}" class="${classNames}">${capitalize(title)} <span class="main-navigation__item-count">${count}</span></a>`;
+  const filterCount = count !== undefined ? `<span class="main-navigation__item-count">${count}</span>` : ``;
+
+  return `<a href="#${type}" class="${classNames}">${name} ${filterCount}</a>`;
 };
 
-const createMainNavigationTemplate = (filterItems) => {
+const createMainNavigationTemplate = (filterItems, currentFilter) => {
   const filterItemsTemplate = filterItems
-    .map((filter, index) => createFilterItemTemplate(filter, index === 0))
+    .map((filter) => createFilterItemTemplate(filter, filter.type === currentFilter))
     .join(``);
+
   return (
     `<nav class="main-navigation">
       <div class="main-navigation__items">
@@ -28,14 +28,42 @@ const createMainNavigationTemplate = (filterItems) => {
   );
 };
 
-export default class MainNavigation extends AbstractView {
-  constructor(filterItems) {
+export default class MainNavigation extends SmartView {
+  constructor({filters, currentFilter}) {
     super();
 
-    this._filterItems = filterItems;
+    this._data = {
+      filters,
+      currentFilter
+    };
+
+    this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
   }
 
   getTemplate() {
-    return createMainNavigationTemplate(this._filterItems);
+    const {filters, currentFilter} = this._data;
+    return createMainNavigationTemplate(filters, currentFilter);
+  }
+
+  restoreHandlers() {
+    const {changeFilterType} = this._callback;
+
+    if (changeFilterType) {
+      this.setFilterTypeChangeHandler(changeFilterType);
+    }
+  }
+
+  _handleFilterTypeChange(evt) {
+    evt.preventDefault();
+
+    const target = evt.target.closest(`a`);
+    const type = target.getAttribute(`href`).replace(`#`, ``);
+
+    this._callback.changeFilterType(type);
+  }
+
+  setFilterTypeChangeHandler(callback) {
+    this._callback.changeFilterType = callback;
+    this.getElement().querySelector(`.main-navigation__items`).addEventListener(`click`, this._handleFilterTypeChange);
   }
 }
