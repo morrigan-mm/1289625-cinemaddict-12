@@ -1,9 +1,11 @@
+import he from 'he';
 import AbstractView from "./abstract.js";
 import CommentView from "./comment.js";
 import EmojiView from "./emoji.js";
 import SelectEmojiView from "./select-emoji.js";
-import {EMOJIS, EmojiSize} from "../constants.js";
+import {EMOJIS, EmojiSize, IS_MAC} from "../constants.js";
 import {remove} from "../utils/render.js";
+import {Key} from "../utils/keyboard.js";
 
 const COMMENTS_CONTAINER_CLASSNAME = `film-details__comments-list`;
 const SELECT_EMOJI_LABEL = `film-details__add-emoji-label`;
@@ -19,6 +21,7 @@ const createCommentListTemplate = (comments) => {
       <ul class="${COMMENTS_CONTAINER_CLASSNAME}"></ul>
 
       <div class="film-details__new-comment">
+        <input type="hidden" name="emotion">
         <div for="add-emoji" class="${SELECT_EMOJI_LABEL}"></div>
 
         <label class="film-details__comment-label">
@@ -36,6 +39,9 @@ export default class CommentList extends AbstractView {
     super();
 
     this._comments = comments;
+
+    this._handleCommentAdd = this._handleCommentAdd.bind(this);
+    this._handleCommentDelete = this._handleCommentDelete.bind(this);
   }
 
   afterElementCreate() {
@@ -47,10 +53,36 @@ export default class CommentList extends AbstractView {
     return createCommentListTemplate(this._comments);
   }
 
+  _handleCommentAdd(evt) {
+    const form = this.getForm();
+
+    const isModifier = IS_MAC ? evt.metaKey : evt.ctrlKey;
+    if (this._callback.addComment && form.elements.emotion.value && isModifier && evt.key === Key.ENTER) {
+
+      this._callback.addComment({
+        comment: he.encode(form.elements.comment.value),
+        date: new Date().toISOString(),
+        emotion: form.elements.emotion.value,
+      });
+    }
+  }
+
+  _handleCommentDelete(commentId) {
+    if (this._callback.deleteComment) {
+      this._callback.deleteComment(commentId);
+    }
+  }
+
   renderComments() {
     const commentListWrapper = this._element.querySelector(`.${COMMENTS_CONTAINER_CLASSNAME}`);
 
-    this._comments.forEach((comment) => commentListWrapper.appendChild(new CommentView(comment).getElement()));
+    this._comments.forEach((comment) => {
+      const commentView = new CommentView(comment);
+
+      commentView.setDeleteCommentHandler(this._handleCommentDelete);
+
+      commentListWrapper.appendChild(commentView.getElement());
+    });
   }
 
   renderEmojis() {
@@ -73,8 +105,28 @@ export default class CommentList extends AbstractView {
       remove(this.activeEmojiView);
     }
 
+    this.getForm().elements.emotion.value = emoji;
+
     this.activeEmojiView = new EmojiView(emoji, EmojiSize.LARGE);
 
     container.appendChild(this.activeEmojiView.getElement());
+  }
+
+  setAddCommentHandler(callback) {
+    this._callback.addComment = callback;
+    this.getForm().addEventListener(`keydown`, this._handleCommentAdd);
+  }
+
+  setDeleteCommentHandler(callback) {
+    this._callback.deleteComment = callback;
+  }
+
+  getForm() {
+    return this.getElement().querySelector(`[name="comment"]`).form;
+  }
+
+  shakeForm() {
+    const label = this.getElement().querySelector(`.film-details__comment-label`);
+    this.shakeElement(label);
   }
 }

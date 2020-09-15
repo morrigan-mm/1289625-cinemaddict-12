@@ -5,14 +5,14 @@ import {formatDate} from "../utils/common.js";
 
 const EMOJI_CONTAINER_CLASSNAME = `film-details__comment-emoji`;
 
-const createCommentTemplate = (comment) => {
-  const {text, author, date} = comment;
+const createCommentTemplate = (commentItem) => {
+  const {comment, author, date} = commentItem;
 
   return (
     `<li class="film-details__comment">
       <span class="${EMOJI_CONTAINER_CLASSNAME}"></span>
       <div>
-        <p class="film-details__comment-text">${text}</p>
+        <p class="film-details__comment-text">${comment}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day">${formatDate(date, DateFormat.TIMESTAMP)}</span>
@@ -28,8 +28,9 @@ export default class Comment extends AbstractView {
     super();
 
     this._comment = comment;
-    this._emoji = comment.emoji;
-    this._element = null;
+    this._emoji = comment.emotion;
+
+    this._handleCommentDelete = this._handleCommentDelete.bind(this);
   }
 
   afterElementCreate() {
@@ -42,7 +43,15 @@ export default class Comment extends AbstractView {
     return createCommentTemplate(this._comment);
   }
 
-  removeElement() {
-    this._element = null;
+  _handleCommentDelete(evt) {
+    evt.preventDefault();
+    evt.target.disabled = true;
+    evt.target.textContent = `Deleting...`;
+    this._callback.deleteComment(this._comment.id);
+  }
+
+  setDeleteCommentHandler(callback) {
+    this._callback.deleteComment = callback;
+    this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._handleCommentDelete);
   }
 }

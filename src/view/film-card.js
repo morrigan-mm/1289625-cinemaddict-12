@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import {copy} from "../utils/common.js";
+import {copy, formatDuration} from "../utils/common.js";
 import SmartView from "./smart.js";
 import {FilmCardControl} from "../constants.js";
 
@@ -27,16 +27,20 @@ const createFilmCardTemplate = (film, maxDescLength) => {
     ? `${description.slice(0, maxDescLength)}…`
     : description;
 
+  const releaseYear = new Date(releaseDate).getFullYear();
+
+  const filmDuration = formatDuration(duration);
+
   return (
     `<article class="film-card">
       <h3 class="${TITLE_CLASSNAME}">${title}</h3>
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
-        <span class="film-card__year">${releaseDate.getFullYear()}</span>
-        <span class="film-card__duration">${duration}</span>
+        <span class="film-card__year">${releaseYear}</span>
+        <span class="film-card__duration">${filmDuration}</span>
         <span class="film-card__genre">${filmGenre}</span>
       </p>
-      <img src="./images/posters/${poster}" alt="" class="${POSTER_CLASSNAME}">
+      <img src="${poster}" alt="" class="${POSTER_CLASSNAME}">
       <p class="film-card__description">${descriptionText}</p>
       <a class="${COMMENTS_CLASSNAME}">${commentsCount} comments</a>
       <form class="film-card__controls">
@@ -109,17 +113,26 @@ export default class FilmCard extends SmartView {
 
   _handleWatchListClick(evt) {
     evt.preventDefault();
+    this._disableButtons();
     this._callback.clickWatchList();
   }
 
   _handleWatchedClick(evt) {
     evt.preventDefault();
+    this._disableButtons();
     this._callback.clickWatched();
   }
 
   _handleFavoriteClick(evt) {
     evt.preventDefault();
+    this._disableButtons();
     this._callback.clickFavorite();
+  }
+
+  _disableButtons() {
+    this.getElement().querySelectorAll(`button`).forEach((button) => {
+      button.disabled = true;
+    });
   }
 
   setWatchListClickHandler(callback) {

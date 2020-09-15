@@ -1,10 +1,10 @@
 import AbstractView from "./abstract.js";
 import {DateFormat} from "../constants.js";
-import {capitalize, formatDate} from "../utils/common.js";
+import {formatDate, formatDuration} from "../utils/common.js";
 
 const createGenresTemplate = (genres) => {
   return genres
-    .map((genre) => `<span class="film-details__genre">${capitalize(genre)}</span>`)
+    .map((genre) => `<span class="film-details__genre">${genre}</span>`)
     .join(``);
 };
 
@@ -19,12 +19,14 @@ const createFilmDetailsTemplate = (film) => {
 
   const genresList = createGenresTemplate(genres);
 
+  const filmDuration = formatDuration(duration);
+
   return (
     `<div class="film-details__info-wrap">
       <div class="film-details__poster">
-        <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
+        <img class="film-details__poster-img" src="${poster}" alt="">
 
-        <p class="film-details__age">${age}</p>
+        <p class="film-details__age">${age}+</p>
       </div>
 
       <div class="film-details__info">
@@ -46,11 +48,11 @@ const createFilmDetailsTemplate = (film) => {
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Writers</td>
-            <td class="film-details__cell">${writers}</td>
+            <td class="film-details__cell">${writers.join(`, `)}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Actors</td>
-            <td class="film-details__cell">${actors}</td>
+            <td class="film-details__cell">${actors.join(`, `)}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Release Date</td>
@@ -58,7 +60,7 @@ const createFilmDetailsTemplate = (film) => {
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Runtime</td>
-            <td class="film-details__cell">${duration}</td>
+            <td class="film-details__cell">${filmDuration}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Country</td>

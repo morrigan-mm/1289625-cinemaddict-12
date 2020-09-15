@@ -28,17 +28,20 @@ const formatTimestampDate = (date) => {
 
 export const formatDate = (date, format) => {
   switch (format) {
-    case DateFormat.CALENDAR:
+    case DateFormat.CALENDAR: {
       return formatCalendarDate(date);
-    case DateFormat.TIMESTAMP:
+    }
+    case DateFormat.TIMESTAMP: {
       return formatTimestampDate(date);
-    default:
+    }
+    default: {
       return moment().format(`LLLL`);
+    }
   }
 };
 
-export const capitalize = (str) => {
-  return str.replace(str[0], str[0].toUpperCase());
+export const formatDuration = (duration) => {
+  return moment.utc(moment.duration(duration, `minutes`).asMilliseconds()).format(`H[h] m[m]`);
 };
 
 export const getRandomInteger = (min = 0, max = 1) => {
@@ -73,4 +76,3 @@ export const updateListItem = (list, item) => {
 
   return [...list.slice(0, index), item, ...list.slice(index + 1)];
 };
-
