@@ -50,7 +50,7 @@ export default class FilmList {
 
     switch (this._sortType) {
       case SortType.DATE: {
-        return sortBy(films, (film) => film.releaseDate);
+        return sortBy(films, (film) => new Date(film.releaseDate));
       }
       case SortType.RATING: {
         return sortBy(films, (film) => film.rating);
@@ -227,6 +227,7 @@ export default class FilmList {
 
   _renderAllFilms() {
     const allFilms = this._getAllFilms();
+
     const filmsCount = allFilms.length;
     const films = allFilms.slice(0, Math.min(filmsCount, FilmCardCount.DEFAULT));
 
@@ -309,13 +310,5 @@ export default class FilmList {
   _renderShowMoreButton() {
     render(this._allFilmsComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
     this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
-  }
-
-  _setFilmDisabled(filmId, disabled) {
-    const cards = this._filmCards[filmId];
-
-    if (cards) {
-      cards.forEach((card) => card.setButtonDisabled(disabled));
-    }
   }
 }
