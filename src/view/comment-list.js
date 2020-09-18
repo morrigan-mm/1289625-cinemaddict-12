@@ -6,6 +6,7 @@ import SelectEmojiView from "./select-emoji.js";
 import {EMOJIS, EmojiSize, IS_MAC} from "../constants.js";
 import {remove} from "../utils/render.js";
 import {Key} from "../utils/keyboard.js";
+import {isOnline} from "../utils/common.js";
 
 const COMMENTS_CONTAINER_CLASSNAME = `film-details__comments-list`;
 const SELECT_EMOJI_LABEL = `film-details__add-emoji-label`;
@@ -54,6 +55,11 @@ export default class CommentList extends AbstractView {
   }
 
   _handleCommentAdd(evt) {
+    if (!isOnline()) {
+      evt.preventDefault();
+      return;
+    }
+
     const form = this.getForm();
 
     const isModifier = IS_MAC ? evt.metaKey : evt.ctrlKey;
@@ -105,11 +111,13 @@ export default class CommentList extends AbstractView {
       remove(this.activeEmojiView);
     }
 
-    this.getForm().elements.emotion.value = emoji;
+    if (isOnline()) {
+      this.getForm().elements.emotion.value = emoji;
 
-    this.activeEmojiView = new EmojiView(emoji, EmojiSize.LARGE);
+      this.activeEmojiView = new EmojiView(emoji, EmojiSize.LARGE);
 
-    container.appendChild(this.activeEmojiView.getElement());
+      container.appendChild(this.activeEmojiView.getElement());
+    }
   }
 
   setAddCommentHandler(callback) {

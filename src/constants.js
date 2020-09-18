@@ -56,16 +56,17 @@ export const StatisticsPeriod = {
   YEAR: `year`
 };
 
-export const UpdateType = {
-  MINOR: `MINOR`,
-  MAJOR: `MAJOR`,
-};
-
 export const UserAction = {
   ADD_COMMENT: `ADD_COMMENT`,
   DELETE_COMMENT: `DELETE_COMMENT`,
   CLICK_CARD: `CLICK_CARD`,
   TOGGLE_WATCHLIST: `TOGGLE_WATCHLIST`,
   TOGGLE_WATCHED: `TOGGLE_WATCHED`,
-  TOGGLE_FAVORITE: `TOGGLE_FAVORITE`,
+  TOGGLE_FAVORITE: `TOGGLE_FAVORITE`
+};
+
+export const UserRank = {
+  NOVICE: `Novice`,
+  FAN: `Fan`,
+  MOVIE_BUFF: `Movie Buff`
 };

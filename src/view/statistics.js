@@ -9,6 +9,20 @@ const FORM_CLASSNAME = `statistic__filters`;
 const TEXT_LIST_CLASSNAME = `statistic__text-list`;
 const CANVAS_CLASSNAME = `statistic__chart`;
 
+const createStatisticsRankTemplate = (rank) => {
+  if (!rank) {
+    return ``;
+  }
+
+  return (
+    `<p class="statistic__rank">
+      Your rank
+      <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
+      <span class="statistic__rank-label">${rank}</span>
+    </p>`
+  );
+};
+
 const createYouWatchedTemplate = (watchedCount) => {
   return (
     `<li class="statistic__text-item">
@@ -45,15 +59,11 @@ const createStatisticsControlTemplate = (period, text, checked) => {
   );
 };
 
-const createStatisticsTemplate = (period, stats) => {
+const createStatisticsTemplate = (period, stats, rank) => {
   const {watchedCount, watchedDuration, topGenre} = stats;
   return (
     `<section class="statistic">
-      <p class="statistic__rank">
-        Your rank
-        <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-        <span class="statistic__rank-label">Sci-Fighter</span>
-      </p>
+      ${createStatisticsRankTemplate(rank)}
 
       <form action="https://echo.htmlacademy.ru/" method="get" class="${FORM_CLASSNAME}">
         <p class="statistic__filters-description">Show stats:</p>
@@ -80,10 +90,11 @@ const createStatisticsTemplate = (period, stats) => {
 };
 
 export default class Statistics extends Abstract {
-  constructor(films) {
+  constructor(films, rank) {
     super();
 
     this._films = films;
+    this._rank = rank;
     this._period = StatisticsPeriod.ALL_TIME;
     this._stats = this._collectStats(this._films, this._period);
 
@@ -91,7 +102,7 @@ export default class Statistics extends Abstract {
   }
 
   getTemplate() {
-    return createStatisticsTemplate(this._period, this._stats);
+    return createStatisticsTemplate(this._period, this._stats, this._rank);
   }
 
   afterElementCreate() {
