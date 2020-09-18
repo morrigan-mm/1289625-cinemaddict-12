@@ -9,7 +9,21 @@ const createGenresTemplate = (genres) => {
 };
 
 const createFilmDetailsTemplate = (film) => {
-  const {title, originalTitle, rating, description, poster, director, writers, actors, releaseDate, duration, country, genres, age} = film;
+  const {
+    title,
+    originalTitle,
+    rating,
+    description,
+    poster,
+    director,
+    writers,
+    actors,
+    releaseDate,
+    duration,
+    country,
+    genres,
+    age
+  } = film;
 
   const release = formatDate(releaseDate, DateFormat.CALENDAR);
 

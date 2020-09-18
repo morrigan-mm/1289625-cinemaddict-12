@@ -31,6 +31,11 @@ export const FilterType = {
   FAVORITES: `favorites`
 };
 
+export const PageType = {
+  FILM_LIST: `film-list`,
+  STATISTICS: `statistics`
+};
+
 export const SortType = {
   DEFAULT: `default`,
   DATE: `date`,
@@ -41,6 +46,14 @@ export const FilmCardControl = {
   WATCHLIST: `watchlist`,
   WATCHED: `watched`,
   FAVORITE: `favorite`
+};
+
+export const StatisticsPeriod = {
+  ALL_TIME: `all-time`,
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`
 };
 
 export const UpdateType = {

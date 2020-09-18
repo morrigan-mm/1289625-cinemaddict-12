@@ -139,7 +139,7 @@ export default class Api {
       "user_details": {
         "already_watched": movie.isWatched,
         "favorite": movie.isFavorite,
-        "watching_date": new Date().toISOString(),
+        "watching_date": movie.watchingDate,
         "watchlist": movie.isAddedToWatchList
       },
       "id": movie.id
