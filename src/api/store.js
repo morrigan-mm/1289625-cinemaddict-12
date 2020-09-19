@@ -4,6 +4,10 @@ export default class Store {
     this._storeKey = key;
   }
 
+  getItem(key) {
+    return this.getItems()[key];
+  }
+
   getItems() {
     try {
       return JSON.parse(this._storage.getItem(this._storeKey)) || {};

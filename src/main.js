@@ -16,7 +16,8 @@ const AUTHORIZATION = `Basic er83jd1zb1dw`;
 const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict`;
 const STORE_PREFIX = `cinemaddict-localstorage`;
 const STORE_VER = `v01`;
-const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
+const FILMS_STORE_NAME = `${STORE_PREFIX}-${STORE_VER}-films`;
+const COMMENTS_STORE_NAME = `${STORE_PREFIX}-${STORE_VER}-comments`;
 
 const body = document.querySelector(`body`);
 const header = body.querySelector(`.header`);
@@ -24,36 +25,43 @@ const main = body.querySelector(`.main`);
 const footerStatistics = body.querySelector(`.footer__statistics`);
 
 const api = new Api(END_POINT, AUTHORIZATION);
-const store = new Store(STORE_NAME, window.localStorage);
-const apiWithProvider = new Provider(api, store);
+const filmsStore = new Store(FILMS_STORE_NAME, window.localStorage);
+const commentsStore = new Store(COMMENTS_STORE_NAME, window.localStorage);
+
+const apiWithProvider = new Provider(api, filmsStore, commentsStore);
 
 const pageModel = new PageModel();
 const filterModel = new FilterModel();
 const filmsModel = new FilmsModel({loading: true});
 
-let page;
+let clearPreviousPage = null;
 
 const renderPage = () => {
   const pageType = pageModel.getPage();
 
-  if (page) {
-    if (page.destroy) {
-      page.destroy();
-    } else {
-      remove(page);
-    }
+  if (clearPreviousPage) {
+    clearPreviousPage();
   }
 
   switch (pageType) {
     case PageType.FILM_LIST: {
-      page = new FilmListPresenter(apiWithProvider, main, filterModel, filmsModel);
+      const page = new FilmListPresenter(apiWithProvider, main, filterModel, filmsModel);
+
       page.render();
+      clearPreviousPage = () => page.destroy();
+
       break;
     }
     case PageType.STATISTICS: {
-      page = new StatisticsView(filmsModel.getFilms(), filmsModel.getRank());
+      const page = new StatisticsView(filmsModel.getFilms(), filmsModel.getRank());
+
       render(main, page, RenderPosition.BEFOREEND);
+      clearPreviousPage = () => remove(page);
+
       break;
+    }
+    default: {
+      clearPreviousPage = null;
     }
   }
 };

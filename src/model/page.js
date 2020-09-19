@@ -9,8 +9,10 @@ export default class Page extends Observer {
   }
 
   setPage(pageType) {
-    this._pageType = pageType;
-    this._notify(pageType);
+    if (this._pageType !== pageType) {
+      this._pageType = pageType;
+      this._notify(pageType);
+    }
   }
 
   getPage() {

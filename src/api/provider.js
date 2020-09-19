@@ -10,9 +10,10 @@ const createStoreStructure = (items) => {
 };
 
 export default class Provider {
-  constructor(api, store) {
+  constructor(api, filmsStore, commentsStore) {
     this._api = api;
-    this._store = store;
+    this._filmsStore = filmsStore;
+    this._commentsStore = commentsStore;
   }
 
   addComment(filmId, localComment) {
@@ -25,7 +26,19 @@ export default class Provider {
 
   getComments(filmId) {
     if (isOnline()) {
-      return this._api.getComments(filmId);
+      return this._api.getComments(filmId)
+        .then((comments) => {
+          comments.forEach((comment) => this._commentsStore.setItem(comment.id, comment));
+          return comments;
+        });
+    }
+
+    const storeFilm = this._filmsStore.getItem(filmId);
+
+    if (storeFilm) {
+      const storeComments = Object.values(this._commentsStore.getItems());
+      const storeFilmComments = storeComments.filter(({id}) => storeFilm.comments.includes(id));
+      return Promise.resolve(storeFilmComments);
     }
 
     return Promise.reject(new Error(`Get comments failed`));
@@ -44,12 +57,12 @@ export default class Provider {
       return this._api.getFilms()
         .then((films) => {
           const items = createStoreStructure(films.map(FilmsModel.adaptToServer));
-          this._store.setItems(items);
+          this._filmsStore.setItems(items);
           return films;
         });
     }
 
-    const storeFilms = Object.values(this._store.getItems());
+    const storeFilms = Object.values(this._filmsStore.getItems());
 
     return Promise.resolve(storeFilms.map(FilmsModel.adaptToClient));
   }
@@ -58,25 +71,25 @@ export default class Provider {
     if (isOnline()) {
       return this._api.updateFilm(film)
         .then((updatedFilm) => {
-          this._store.setItem(updatedFilm.id, FilmsModel.adaptToServer(updatedFilm));
+          this._filmsStore.setItem(updatedFilm.id, FilmsModel.adaptToServer(updatedFilm));
           return updatedFilm;
         });
     }
 
-    this._store.setItem(film.id, FilmsModel.adaptToServer(Object.assign({}, film)));
+    this._filmsStore.setItem(film.id, FilmsModel.adaptToServer(Object.assign({}, film)));
 
     return Promise.resolve(film);
   }
 
   sync() {
     if (isOnline()) {
-      const storeFilms = Object.values(this._store.getItems());
+      const storeFilms = Object.values(this._filmsStore.getItems());
 
       return this._api.sync(storeFilms)
         .then((response) => {
           const items = createStoreStructure(response.updated);
 
-          this._store.setItems(items);
+          this._filmsStore.setItems(items);
         });
     }
 

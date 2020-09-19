@@ -42,9 +42,7 @@ export default class MainNavigation {
   }
 
   _handleFilterTypeChange(filterType) {
-    if (this._filterModel.getFilter() !== filterType) {
-      this._filterModel.setFilter(filterType);
-    }
+    this._filterModel.setFilter(filterType);
 
     if (this._pageModel.getPage() === PageType.STATISTICS) {
       this._pageModel.setPage(PageType.FILM_LIST);
@@ -52,9 +50,7 @@ export default class MainNavigation {
   }
 
   _handleStatisticsShow() {
-    if (this._pageModel.getPage() === PageType.FILM_LIST) {
-      this._pageModel.setPage(PageType.STATISTICS);
-    }
+    this._pageModel.setPage(PageType.STATISTICS);
   }
 
   _getFilters() {
