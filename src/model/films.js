@@ -97,7 +97,7 @@ export default class Films extends Observer {
   }
 
   static getRank(films) {
-    const watchedCount = films.filter(({watchingDate}) => watchingDate).length;
+    const watchedCount = films.filter(({isWatched}) => isWatched).length;
 
     if (watchedCount > 20) {
       return UserRank.MOVIE_BUFF;

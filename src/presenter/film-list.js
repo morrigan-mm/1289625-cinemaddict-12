@@ -217,7 +217,7 @@ export default class FilmList {
       case UserAction.TOGGLE_WATCHED: {
         const film = this._createFilmUpdate(payload.id, ({isWatched}) => ({
           isWatched: !isWatched,
-          watchedDate: isWatched ? new Date().toISOString() : null,
+          watchingDate: !isWatched ? new Date().toISOString() : null,
         }));
         this._api.updateFilm(film)
           .then((updated) => {
