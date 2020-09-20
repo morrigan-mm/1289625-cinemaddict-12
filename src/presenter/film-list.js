@@ -50,7 +50,7 @@ export default class FilmList {
 
     switch (this._sortType) {
       case SortType.DATE: {
-        return sortBy(films, (film) => film.releaseDate);
+        return sortBy(films, (film) => new Date(film.releaseDate));
       }
       case SortType.RATING: {
         return sortBy(films, (film) => film.rating);
@@ -66,7 +66,23 @@ export default class FilmList {
 
     render(this._container, this._filmListComponent, RenderPosition.BEFOREEND);
 
-    this._renderLoading();
+    if (this._filmsModel.getLoading()) {
+      this._renderLoading();
+    } else {
+      this._renderContent();
+    }
+  }
+
+  destroy() {
+    remove(this._sortingComponent);
+    remove(this._filmListComponent);
+
+    this._filmsModel.removeObserver(this._handleFilmsModelChange);
+    this._filterModel.removeObserver(this._handleFilterModelChange);
+
+    if (this._commentsModel) {
+      this._commentsModel.removeObserver(this._handleCommentsModelChange);
+    }
   }
 
   _updateAllFilms() {
@@ -199,7 +215,10 @@ export default class FilmList {
         break;
       }
       case UserAction.TOGGLE_WATCHED: {
-        const film = this._createFilmUpdate(payload.id, ({isWatched}) => ({isWatched: !isWatched}));
+        const film = this._createFilmUpdate(payload.id, ({isWatched}) => ({
+          isWatched: !isWatched,
+          watchingDate: !isWatched ? new Date().toISOString() : null,
+        }));
         this._api.updateFilm(film)
           .then((updated) => {
             this._filmsModel.updateFilm(updated);
@@ -227,6 +246,7 @@ export default class FilmList {
 
   _renderAllFilms() {
     const allFilms = this._getAllFilms();
+
     const filmsCount = allFilms.length;
     const films = allFilms.slice(0, Math.min(filmsCount, FilmCardCount.DEFAULT));
 
@@ -309,13 +329,5 @@ export default class FilmList {
   _renderShowMoreButton() {
     render(this._allFilmsComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
     this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
-  }
-
-  _setFilmDisabled(filmId, disabled) {
-    const cards = this._filmCards[filmId];
-
-    if (cards) {
-      cards.forEach((card) => card.setButtonDisabled(disabled));
-    }
   }
 }

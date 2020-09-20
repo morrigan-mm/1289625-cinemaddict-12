@@ -31,6 +31,11 @@ export const FilterType = {
   FAVORITES: `favorites`
 };
 
+export const PageType = {
+  FILM_LIST: `film-list`,
+  STATISTICS: `statistics`
+};
+
 export const SortType = {
   DEFAULT: `default`,
   DATE: `date`,
@@ -43,9 +48,12 @@ export const FilmCardControl = {
   FAVORITE: `favorite`
 };
 
-export const UpdateType = {
-  MINOR: `MINOR`,
-  MAJOR: `MAJOR`,
+export const StatisticsPeriod = {
+  ALL_TIME: `all-time`,
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`
 };
 
 export const UserAction = {
@@ -54,5 +62,11 @@ export const UserAction = {
   CLICK_CARD: `CLICK_CARD`,
   TOGGLE_WATCHLIST: `TOGGLE_WATCHLIST`,
   TOGGLE_WATCHED: `TOGGLE_WATCHED`,
-  TOGGLE_FAVORITE: `TOGGLE_FAVORITE`,
+  TOGGLE_FAVORITE: `TOGGLE_FAVORITE`
+};
+
+export const UserRank = {
+  NOVICE: `Novice`,
+  FAN: `Fan`,
+  MOVIE_BUFF: `Movie Buff`
 };

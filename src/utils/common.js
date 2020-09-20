@@ -76,3 +76,7 @@ export const updateListItem = (list, item) => {
 
   return [...list.slice(0, index), item, ...list.slice(index + 1)];
 };
+
+export const isOnline = () => {
+  return window.navigator.onLine;
+};

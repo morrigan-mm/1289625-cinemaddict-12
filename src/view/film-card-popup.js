@@ -80,7 +80,8 @@ export default class FilmCardPopup extends SmartView {
 
   _handleWatchListChange(evt) {
     evt.preventDefault();
-    if (!this._inputIsDisabled(FilmCardControl.WATCHLIST)) {
+
+    if (!this._inputIsDisabled(evt)) {
       this._callback.changeWatchList();
     }
     this._disableInputs();
@@ -88,7 +89,8 @@ export default class FilmCardPopup extends SmartView {
 
   _handleWatchedChange(evt) {
     evt.preventDefault();
-    if (!this._inputIsDisabled(FilmCardControl.WATCHED)) {
+
+    if (!this._inputIsDisabled(evt)) {
       this._callback.changeWatched();
     }
     this._disableInputs();
@@ -96,7 +98,8 @@ export default class FilmCardPopup extends SmartView {
 
   _handleFavoriteChange(evt) {
     evt.preventDefault();
-    if (!this._inputIsDisabled(FilmCardControl.FAVORITE)) {
+
+    if (!this._inputIsDisabled(evt)) {
       this._callback.changeFavorite();
     }
     this._disableInputs();
@@ -113,8 +116,8 @@ export default class FilmCardPopup extends SmartView {
     });
   }
 
-  _inputIsDisabled(id) {
-    return document.getElementById(id).disabled;
+  _inputIsDisabled(evt) {
+    return evt.target.previousElementSibling.disabled;
   }
 
   setWatchListChangeHandler(callback) {

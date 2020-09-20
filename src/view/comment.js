@@ -1,7 +1,7 @@
 import AbstractView from "./abstract.js";
 import EmojiView from "./emoji.js";
 import {EmojiSize, DateFormat} from "../constants.js";
-import {formatDate} from "../utils/common.js";
+import {formatDate, isOnline} from "../utils/common.js";
 
 const EMOJI_CONTAINER_CLASSNAME = `film-details__comment-emoji`;
 
@@ -45,8 +45,15 @@ export default class Comment extends AbstractView {
 
   _handleCommentDelete(evt) {
     evt.preventDefault();
+
+    if (!isOnline()) {
+      this.shakeElement(this.getElement());
+      return;
+    }
+
     evt.target.disabled = true;
     evt.target.textContent = `Deleting...`;
+
     this._callback.deleteComment(this._comment.id);
   }
 

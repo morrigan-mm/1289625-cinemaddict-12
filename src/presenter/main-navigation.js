@@ -1,11 +1,12 @@
 import MainNavigationView from "../view/main-navigation.js";
 import {filter} from "../utils/filter.js";
-import {FilterType} from "../constants.js";
+import {FilterType, PageType} from "../constants.js";
 import {render, RenderPosition} from "../utils/render.js";
 
 export default class MainNavigation {
-  constructor(container, filterModel, filmsModel) {
+  constructor(container, pageModel, filterModel, filmsModel) {
     this._container = container;
+    this._pageModel = pageModel;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
 
@@ -13,17 +14,21 @@ export default class MainNavigation {
 
     this._handleModelUpdate = this._handleModelUpdate.bind(this);
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
+    this._handleStatisticsShow = this._handleStatisticsShow.bind(this);
   }
 
   render() {
     const filters = this._getFilters();
     const currentFilter = this._filterModel.getFilter();
+    const page = this._pageModel.getPage();
 
-    this._mainNavigationComponent = new MainNavigationView({filters, currentFilter});
+    this._mainNavigationComponent = new MainNavigationView({filters, currentFilter, page});
     render(this._container, this._mainNavigationComponent, RenderPosition.AFTERBEGIN);
 
     this._mainNavigationComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._mainNavigationComponent.setStatisticsShowHandler(this._handleStatisticsShow);
 
+    this._pageModel.addObserver(this._handleModelUpdate);
     this._filmsModel.addObserver(this._handleModelUpdate);
     this._filterModel.addObserver(this._handleModelUpdate);
   }
@@ -31,12 +36,21 @@ export default class MainNavigation {
   _handleModelUpdate() {
     const filters = this._getFilters();
     const currentFilter = this._filterModel.getFilter();
+    const page = this._pageModel.getPage();
 
-    this._mainNavigationComponent.updateData({filters, currentFilter});
+    this._mainNavigationComponent.updateData({filters, currentFilter, page});
   }
 
   _handleFilterTypeChange(filterType) {
     this._filterModel.setFilter(filterType);
+
+    if (this._pageModel.getPage() === PageType.STATISTICS) {
+      this._pageModel.setPage(PageType.FILM_LIST);
+    }
+  }
+
+  _handleStatisticsShow() {
+    this._pageModel.setPage(PageType.STATISTICS);
   }
 
   _getFilters() {
