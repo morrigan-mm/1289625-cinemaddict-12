@@ -49,13 +49,13 @@ export default class FilmCardPopup extends SmartView {
     this._handlePopupClose = this._handlePopupClose.bind(this);
   }
 
+  afterElementCreate() {
+    this.renderFilmDetails();
+  }
+
   getTemplate() {
     const {film} = this._data;
     return createFilmCardPopupTemplate(film);
-  }
-
-  afterElementCreate() {
-    this.renderFilmDetails();
   }
 
   restoreHandlers() {
@@ -78,36 +78,19 @@ export default class FilmCardPopup extends SmartView {
     }
   }
 
-  _handleWatchListChange(evt) {
-    evt.preventDefault();
-
-    if (!this._inputIsDisabled(evt)) {
-      this._callback.changeWatchList();
-    }
-    this._disableInputs();
+  getCloseButton() {
+    return this.getElement().querySelector(`.${CLOSE_BUTTON_CLASSNAME}`);
   }
 
-  _handleWatchedChange(evt) {
-    evt.preventDefault();
-
-    if (!this._inputIsDisabled(evt)) {
-      this._callback.changeWatched();
-    }
-    this._disableInputs();
+  getCommentsContainer() {
+    return this._element.querySelector(`.${COMMENTS_CONTAINER_CLASSNAME}`);
   }
 
-  _handleFavoriteChange(evt) {
-    evt.preventDefault();
+  renderFilmDetails() {
+    const {film} = this._data;
+    const filmDetailsWrapper = this._element.querySelector(`.${FILM_DETAILS_CONTAINER_CLASSNAME}`);
 
-    if (!this._inputIsDisabled(evt)) {
-      this._callback.changeFavorite();
-    }
-    this._disableInputs();
-  }
-
-  _handlePopupClose(evt) {
-    evt.preventDefault();
-    this._callback.closePopup();
+    filmDetailsWrapper.insertBefore(new FilmDetailsView(film).getElement(), filmDetailsWrapper.querySelector(`.film-details__controls`));
   }
 
   _disableInputs() {
@@ -140,18 +123,35 @@ export default class FilmCardPopup extends SmartView {
     this.getCloseButton().addEventListener(`click`, this._handlePopupClose);
   }
 
-  getCloseButton() {
-    return this.getElement().querySelector(`.${CLOSE_BUTTON_CLASSNAME}`);
+  _handleWatchListChange(evt) {
+    evt.preventDefault();
+
+    if (!this._inputIsDisabled(evt)) {
+      this._callback.changeWatchList();
+    }
+    this._disableInputs();
   }
 
-  getCommentsContainer() {
-    return this._element.querySelector(`.${COMMENTS_CONTAINER_CLASSNAME}`);
+  _handleWatchedChange(evt) {
+    evt.preventDefault();
+
+    if (!this._inputIsDisabled(evt)) {
+      this._callback.changeWatched();
+    }
+    this._disableInputs();
   }
 
-  renderFilmDetails() {
-    const {film} = this._data;
-    const filmDetailsWrapper = this._element.querySelector(`.${FILM_DETAILS_CONTAINER_CLASSNAME}`);
+  _handleFavoriteChange(evt) {
+    evt.preventDefault();
 
-    filmDetailsWrapper.insertBefore(new FilmDetailsView(film).getElement(), filmDetailsWrapper.querySelector(`.film-details__controls`));
+    if (!this._inputIsDisabled(evt)) {
+      this._callback.changeFavorite();
+    }
+    this._disableInputs();
+  }
+
+  _handlePopupClose(evt) {
+    evt.preventDefault();
+    this._callback.closePopup();
   }
 }

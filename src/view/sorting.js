@@ -31,23 +31,6 @@ export default class Sorting extends AbstractView {
     return createSortingTemplate(this._initialSortType);
   }
 
-  _sortTypeChangeHandler(evt) {
-    if (evt.target.tagName !== `A`) {
-      return;
-    }
-
-    evt.preventDefault();
-
-    const nextSortType = evt.target.dataset.sortType;
-
-    this.setSortType(nextSortType);
-  }
-
-  setSortTypeChangeHandler(callback) {
-    this._callback.sortTypeChange = callback;
-    this.getElement().addEventListener(`click`, this._sortTypeChangeHandler);
-  }
-
   setSortType(sortType) {
     const currentActive = this.getElement().querySelector(`.${ACTIVE_BUTTON_CLASSNAME}`);
     const nextActive = this.getElement().querySelector(`[data-sort-type="${sortType}"]`);
@@ -65,5 +48,22 @@ export default class Sorting extends AbstractView {
     }
 
     this._callback.sortTypeChange(sortType);
+  }
+
+  setSortTypeChangeHandler(callback) {
+    this._callback.sortTypeChange = callback;
+    this.getElement().addEventListener(`click`, this._sortTypeChangeHandler);
+  }
+
+  _sortTypeChangeHandler(evt) {
+    if (evt.target.tagName !== `A`) {
+      return;
+    }
+
+    evt.preventDefault();
+
+    const nextSortType = evt.target.dataset.sortType;
+
+    this.setSortType(nextSortType);
   }
 }

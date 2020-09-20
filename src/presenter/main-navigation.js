@@ -33,26 +33,6 @@ export default class MainNavigation {
     this._filterModel.addObserver(this._handleModelUpdate);
   }
 
-  _handleModelUpdate() {
-    const filters = this._getFilters();
-    const currentFilter = this._filterModel.getFilter();
-    const page = this._pageModel.getPage();
-
-    this._mainNavigationComponent.updateData({filters, currentFilter, page});
-  }
-
-  _handleFilterTypeChange(filterType) {
-    this._filterModel.setFilter(filterType);
-
-    if (this._pageModel.getPage() === PageType.STATISTICS) {
-      this._pageModel.setPage(PageType.FILM_LIST);
-    }
-  }
-
-  _handleStatisticsShow() {
-    this._pageModel.setPage(PageType.STATISTICS);
-  }
-
   _getFilters() {
     const films = this._filmsModel.getFilms();
 
@@ -77,5 +57,25 @@ export default class MainNavigation {
         count: filter[FilterType.FAVORITES](films).length
       }
     ];
+  }
+
+  _handleModelUpdate() {
+    const filters = this._getFilters();
+    const currentFilter = this._filterModel.getFilter();
+    const page = this._pageModel.getPage();
+
+    this._mainNavigationComponent.updateData({filters, currentFilter, page});
+  }
+
+  _handleFilterTypeChange(filterType) {
+    this._filterModel.setFilter(filterType);
+
+    if (this._pageModel.getPage() === PageType.STATISTICS) {
+      this._pageModel.setPage(PageType.FILM_LIST);
+    }
+  }
+
+  _handleStatisticsShow() {
+    this._pageModel.setPage(PageType.STATISTICS);
   }
 }

@@ -18,9 +18,9 @@ export default class HeaderProfile extends SmartView {
     this._data = {rank};
   }
 
-  restoreHandlers() {}
-
   getTemplate() {
     return createHeaderProfileTemplate(this._data);
   }
+
+  restoreHandlers() {}
 }

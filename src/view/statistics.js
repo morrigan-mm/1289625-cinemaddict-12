@@ -101,10 +101,6 @@ export default class Statistics extends Abstract {
     this._handlePeriodChange = this._handlePeriodChange.bind(this);
   }
 
-  getTemplate() {
-    return createStatisticsTemplate(this._period, this._stats, this._rank);
-  }
-
   afterElementCreate() {
     this._form = this.getElement().querySelector(`.${FORM_CLASSNAME}`);
     this._canvas = this.getElement().querySelector(`.${CANVAS_CLASSNAME}`);
@@ -113,11 +109,8 @@ export default class Statistics extends Abstract {
     this._form.addEventListener(`change`, this._handlePeriodChange);
   }
 
-  _handlePeriodChange(evt) {
-    this._period = evt.target.value;
-    this._stats = this._collectStats(this._films, this._period);
-    this._updateTextList();
-    this._updateChart();
+  getTemplate() {
+    return createStatisticsTemplate(this._period, this._stats, this._rank);
   }
 
   _collectStats(films, period) {
@@ -264,5 +257,12 @@ export default class Statistics extends Abstract {
     this._canvas.parentElement.style.height = `${this._getCanvasHeight()}px`;
     this._chart.data = this._getChartData();
     this._chart.update();
+  }
+
+  _handlePeriodChange(evt) {
+    this._period = evt.target.value;
+    this._stats = this._collectStats(this._films, this._period);
+    this._updateTextList();
+    this._updateChart();
   }
 }

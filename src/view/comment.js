@@ -43,6 +43,11 @@ export default class Comment extends AbstractView {
     return createCommentTemplate(this._comment);
   }
 
+  setDeleteCommentHandler(callback) {
+    this._callback.deleteComment = callback;
+    this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._handleCommentDelete);
+  }
+
   _handleCommentDelete(evt) {
     evt.preventDefault();
 
@@ -55,10 +60,5 @@ export default class Comment extends AbstractView {
     evt.target.textContent = `Deleting...`;
 
     this._callback.deleteComment(this._comment.id);
-  }
-
-  setDeleteCommentHandler(callback) {
-    this._callback.deleteComment = callback;
-    this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._handleCommentDelete);
   }
 }

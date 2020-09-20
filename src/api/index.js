@@ -65,7 +65,6 @@ export default class Api {
       .then(Api.toJSON);
   }
 
-
   _load({
     url,
     method = Method.GET,

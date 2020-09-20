@@ -54,29 +54,8 @@ export default class CommentList extends AbstractView {
     return createCommentListTemplate(this._comments);
   }
 
-  _handleCommentAdd(evt) {
-    if (!isOnline()) {
-      evt.preventDefault();
-      return;
-    }
-
-    const form = this.getForm();
-
-    const isModifier = IS_MAC ? evt.metaKey : evt.ctrlKey;
-    if (this._callback.addComment && form.elements.emotion.value && isModifier && evt.key === Key.ENTER) {
-
-      this._callback.addComment({
-        comment: he.encode(form.elements.comment.value),
-        date: new Date().toISOString(),
-        emotion: form.elements.emotion.value,
-      });
-    }
-  }
-
-  _handleCommentDelete(commentId) {
-    if (this._callback.deleteComment) {
-      this._callback.deleteComment(commentId);
-    }
+  getForm() {
+    return this.getElement().querySelector(`[name="comment"]`).form;
   }
 
   renderComments() {
@@ -106,6 +85,11 @@ export default class CommentList extends AbstractView {
     });
   }
 
+  shakeForm() {
+    const label = this.getElement().querySelector(`.film-details__comment-label`);
+    this.shakeElement(label);
+  }
+
   setActiveEmoji(container, emoji) {
     if (this.activeEmojiView) {
       remove(this.activeEmojiView);
@@ -129,12 +113,28 @@ export default class CommentList extends AbstractView {
     this._callback.deleteComment = callback;
   }
 
-  getForm() {
-    return this.getElement().querySelector(`[name="comment"]`).form;
+  _handleCommentAdd(evt) {
+    if (!isOnline()) {
+      evt.preventDefault();
+      return;
+    }
+
+    const form = this.getForm();
+
+    const isModifier = IS_MAC ? evt.metaKey : evt.ctrlKey;
+    if (this._callback.addComment && form.elements.emotion.value && isModifier && evt.key === Key.ENTER) {
+
+      this._callback.addComment({
+        comment: he.encode(form.elements.comment.value),
+        date: new Date().toISOString(),
+        emotion: form.elements.emotion.value,
+      });
+    }
   }
 
-  shakeForm() {
-    const label = this.getElement().querySelector(`.film-details__comment-label`);
-    this.shakeElement(label);
+  _handleCommentDelete(commentId) {
+    if (this._callback.deleteComment) {
+      this._callback.deleteComment(commentId);
+    }
   }
 }

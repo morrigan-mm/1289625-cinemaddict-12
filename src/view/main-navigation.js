@@ -67,6 +67,16 @@ export default class MainNavigation extends SmartView {
     }
   }
 
+  setFilterTypeChangeHandler(callback) {
+    this._callback.changeFilterType = callback;
+    this.getElement().querySelector(`.main-navigation__items`).addEventListener(`click`, this._handleFilterTypeChange);
+  }
+
+  setStatisticsShowHandler(callback) {
+    this._callback.showStatistics = callback;
+    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, this._handleStatisticsShow);
+  }
+
   _handleFilterTypeChange(evt) {
     evt.preventDefault();
 
@@ -80,15 +90,5 @@ export default class MainNavigation extends SmartView {
     evt.preventDefault();
 
     this._callback.showStatistics();
-  }
-
-  setFilterTypeChangeHandler(callback) {
-    this._callback.changeFilterType = callback;
-    this.getElement().querySelector(`.main-navigation__items`).addEventListener(`click`, this._handleFilterTypeChange);
-  }
-
-  setStatisticsShowHandler(callback) {
-    this._callback.showStatistics = callback;
-    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, this._handleStatisticsShow);
   }
 }
