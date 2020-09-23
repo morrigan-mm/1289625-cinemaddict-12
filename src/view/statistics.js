@@ -98,7 +98,7 @@ export default class Statistics extends Abstract {
     this._period = StatisticsPeriod.ALL_TIME;
     this._stats = this._collectStats(this._films, this._period);
 
-    this._handlePeriodChange = this._handlePeriodChange.bind(this);
+    this._periodChangeHandler = this._periodChangeHandler.bind(this);
   }
 
   afterElementCreate() {
@@ -106,7 +106,7 @@ export default class Statistics extends Abstract {
     this._canvas = this.getElement().querySelector(`.${CANVAS_CLASSNAME}`);
     this._chart = this._initChart();
 
-    this._form.addEventListener(`change`, this._handlePeriodChange);
+    this._form.addEventListener(`change`, this._periodChangeHandler);
   }
 
   getTemplate() {
@@ -114,12 +114,12 @@ export default class Statistics extends Abstract {
   }
 
   _collectStats(films, period) {
-    const watched = this._getFilmsByPeriod(films, period);
-    const watchedDuration = watched.map(({duration}) => duration).reduce((a, b) => a + b, 0);
-    const genreRates = this._collectGenreRates(watched).sort((a, b) => b[1] - a[1]);
+    const watchedFilms = this._getFilmsByPeriod(films, period);
+    const watchedDuration = watchedFilms.map(({duration}) => duration).reduce((a, b) => a + b, 0);
+    const genreRates = this._collectGenreRates(watchedFilms).sort((a, b) => b[1] - a[1]);
     const topGenre = genreRates.length > 0 ? genreRates[0][0] : null;
     return {
-      watchedCount: watched.length,
+      watchedCount: watchedFilms.length,
       watchedDuration,
       genreRates,
       topGenre
@@ -259,7 +259,7 @@ export default class Statistics extends Abstract {
     this._chart.update();
   }
 
-  _handlePeriodChange(evt) {
+  _periodChangeHandler(evt) {
     this._period = evt.target.value;
     this._stats = this._collectStats(this._films, this._period);
     this._updateTextList();

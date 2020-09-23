@@ -1,11 +1,11 @@
 import HeaderProfileView from "./view/header-profile.js";
 import FooterStatisticsView from "./view/footer-statistics.js";
-import MainNavigationPresenter from "./presenter/main-navigation.js";
-import FilmListPresenter from "./presenter/film-list.js";
 import StatisticsView from "./view/statistics.js";
 import FilmsModel from "./model/films.js";
 import FilterModel from "./model/filter.js";
 import PageModel from "./model/page.js";
+import MainNavigationPresenter from "./presenter/main-navigation.js";
+import FilmListPresenter from "./presenter/film-list.js";
 import {render, RenderPosition, remove} from "./utils/render.js";
 import Api from "./api/index.js";
 import Store from "./api/store.js";

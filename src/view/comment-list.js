@@ -41,8 +41,8 @@ export default class CommentList extends AbstractView {
 
     this._comments = comments;
 
-    this._handleCommentAdd = this._handleCommentAdd.bind(this);
-    this._handleCommentDelete = this._handleCommentDelete.bind(this);
+    this._commentAddHandler = this._commentAddHandler.bind(this);
+    this._commentDeleteHandler = this._commentDeleteHandler.bind(this);
   }
 
   afterElementCreate() {
@@ -64,7 +64,7 @@ export default class CommentList extends AbstractView {
     this._comments.forEach((comment) => {
       const commentView = new CommentView(comment);
 
-      commentView.setDeleteCommentHandler(this._handleCommentDelete);
+      commentView.setDeleteCommentHandler(this._commentDeleteHandler);
 
       commentListWrapper.appendChild(commentView.getElement());
     });
@@ -106,14 +106,14 @@ export default class CommentList extends AbstractView {
 
   setAddCommentHandler(callback) {
     this._callback.addComment = callback;
-    this.getForm().addEventListener(`keydown`, this._handleCommentAdd);
+    this.getForm().addEventListener(`keydown`, this._commentAddHandler);
   }
 
   setDeleteCommentHandler(callback) {
     this._callback.deleteComment = callback;
   }
 
-  _handleCommentAdd(evt) {
+  _commentAddHandler(evt) {
     if (!isOnline()) {
       evt.preventDefault();
       return;
@@ -132,7 +132,7 @@ export default class CommentList extends AbstractView {
     }
   }
 
-  _handleCommentDelete(commentId) {
+  _commentDeleteHandler(commentId) {
     if (this._callback.deleteComment) {
       this._callback.deleteComment(commentId);
     }

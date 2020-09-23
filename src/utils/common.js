@@ -44,19 +44,8 @@ export const formatDuration = (duration) => {
   return moment.utc(moment.duration(duration, `minutes`).asMilliseconds()).format(`H[h] m[m]`);
 };
 
-export const getRandomInteger = (min = 0, max = 1) => {
-  const lower = Math.ceil(Math.min(min, max));
-  const upper = Math.floor(Math.max(min, max));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
-export const getRandomBoolean = () => {
-  return Boolean(getRandomInteger(0, 1));
-};
-
-export const sortBy = (array, fn) => {
-  return array.slice().sort((a, b) => fn(b) - fn(a));
+export const sortBy = (elements, sortCallback) => {
+  return elements.slice().sort((element1, element2) => sortCallback(element2) - sortCallback(element1));
 };
 
 export const copy = (obj) => {

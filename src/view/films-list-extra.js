@@ -2,7 +2,7 @@ import AbstractView from "./abstract.js";
 
 const FILMS_CONTAINER_CLASSNAME = `films-list__container`;
 
-const createMostCommentedFilmsTemplate = (title) => {
+const createFilmsListExtraTemplate = (title) => {
   return (
     `<section class="films-list--extra">
       <h2 class="films-list__title">${title}</h2>
@@ -11,7 +11,7 @@ const createMostCommentedFilmsTemplate = (title) => {
   );
 };
 
-export default class TopRatedFilms extends AbstractView {
+export default class FilmsListExtra extends AbstractView {
   constructor(title) {
     super();
 
@@ -19,7 +19,7 @@ export default class TopRatedFilms extends AbstractView {
   }
 
   getTemplate() {
-    return createMostCommentedFilmsTemplate(this._title);
+    return createFilmsListExtraTemplate(this._title);
   }
 
   getFilmsContainer() {

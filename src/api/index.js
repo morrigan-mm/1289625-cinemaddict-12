@@ -24,7 +24,7 @@ export default class Api {
       method: Method.POST,
       url: `comments/${filmId}`
     })
-      .then(Api.toJSON)
+      .then(Api.convertToJSON)
       .then(({comments}) => comments);
   }
 
@@ -37,12 +37,12 @@ export default class Api {
 
   getComments(filmId) {
     return this._load({url: `comments/${filmId}`})
-      .then(Api.toJSON);
+      .then(Api.convertToJSON);
   }
 
   getFilms() {
     return this._load({url: `movies`})
-      .then(Api.toJSON)
+      .then(Api.convertToJSON)
       .then((movies) => movies.map(FilmsModel.adaptToClient));
   }
 
@@ -52,7 +52,7 @@ export default class Api {
       method: Method.PUT,
       url: `movies/${movie.id}`
     })
-      .then(Api.toJSON)
+      .then(Api.convertToJSON)
       .then(FilmsModel.adaptToClient);
   }
 
@@ -62,7 +62,7 @@ export default class Api {
       method: Method.POST,
       url: `movies/sync`,
     })
-      .then(Api.toJSON);
+      .then(Api.convertToJSON);
   }
 
   _load({
@@ -88,7 +88,7 @@ export default class Api {
 
   static checkStatus(response) {
     if (
-      response.status < SuccessHTTPStatusRange.MIN &&
+      response.status < SuccessHTTPStatusRange.MIN ||
       response.status > SuccessHTTPStatusRange.MAX
     ) {
       throw new Error(`${response.status}: ${response.statusText}`);
@@ -97,7 +97,7 @@ export default class Api {
     return response;
   }
 
-  static toJSON(response) {
+  static convertToJSON(response) {
     return response.json();
   }
 

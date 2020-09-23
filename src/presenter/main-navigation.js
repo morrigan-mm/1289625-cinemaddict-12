@@ -12,9 +12,9 @@ export default class MainNavigation {
 
     this._mainNavigationComponent = null;
 
-    this._handleModelUpdate = this._handleModelUpdate.bind(this);
-    this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
-    this._handleStatisticsShow = this._handleStatisticsShow.bind(this);
+    this._modelUpdateHandler = this._modelUpdateHandler.bind(this);
+    this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
+    this._statisticsShowHandler = this._statisticsShowHandler.bind(this);
   }
 
   render() {
@@ -25,12 +25,12 @@ export default class MainNavigation {
     this._mainNavigationComponent = new MainNavigationView({filters, currentFilter, page});
     render(this._container, this._mainNavigationComponent, RenderPosition.AFTERBEGIN);
 
-    this._mainNavigationComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
-    this._mainNavigationComponent.setStatisticsShowHandler(this._handleStatisticsShow);
+    this._mainNavigationComponent.setFilterTypeChangeHandler(this._filterTypeChangeHandler);
+    this._mainNavigationComponent.setStatisticsShowHandler(this._statisticsShowHandler);
 
-    this._pageModel.addObserver(this._handleModelUpdate);
-    this._filmsModel.addObserver(this._handleModelUpdate);
-    this._filterModel.addObserver(this._handleModelUpdate);
+    this._pageModel.addObserver(this._modelUpdateHandler);
+    this._filmsModel.addObserver(this._modelUpdateHandler);
+    this._filterModel.addObserver(this._modelUpdateHandler);
   }
 
   _getFilters() {
@@ -59,7 +59,7 @@ export default class MainNavigation {
     ];
   }
 
-  _handleModelUpdate() {
+  _modelUpdateHandler() {
     const filters = this._getFilters();
     const currentFilter = this._filterModel.getFilter();
     const page = this._pageModel.getPage();
@@ -67,7 +67,7 @@ export default class MainNavigation {
     this._mainNavigationComponent.updateData({filters, currentFilter, page});
   }
 
-  _handleFilterTypeChange(filterType) {
+  _filterTypeChangeHandler(filterType) {
     this._filterModel.setFilter(filterType);
 
     if (this._pageModel.getPage() === PageType.STATISTICS) {
@@ -75,7 +75,7 @@ export default class MainNavigation {
     }
   }
 
-  _handleStatisticsShow() {
+  _statisticsShowHandler() {
     this._pageModel.setPage(PageType.STATISTICS);
   }
 }

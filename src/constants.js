@@ -3,7 +3,6 @@ export const IS_MAC = navigator.platform.toUpperCase().indexOf(`MAC`) >= 0;
 export const EMOJIS = [`smile`, `sleeping`, `angry`, `puke`];
 
 export const FilmCardCount = {
-  MOCK_COUNT: 20,
   DEFAULT: 5,
   EXTRA: 2
 };

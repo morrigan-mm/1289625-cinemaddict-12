@@ -43,10 +43,10 @@ export default class FilmCardPopup extends SmartView {
 
     this._data = {comments, film};
 
-    this._handleWatchListChange = this._handleWatchListChange.bind(this);
-    this._handleWatchedChange = this._handleWatchedChange.bind(this);
-    this._handleFavoriteChange = this._handleFavoriteChange.bind(this);
-    this._handlePopupClose = this._handlePopupClose.bind(this);
+    this._watchListChangeHandler = this._watchListChangeHandler.bind(this);
+    this._watchedChangeHandler = this._watchedChangeHandler.bind(this);
+    this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
+    this._popupCloseHandler = this._popupCloseHandler.bind(this);
   }
 
   afterElementCreate() {
@@ -105,25 +105,25 @@ export default class FilmCardPopup extends SmartView {
 
   setWatchListChangeHandler(callback) {
     this._callback.changeWatchList = callback;
-    this.getElement().querySelector(`[for="${FilmCardControl.WATCHLIST}"]`).addEventListener(`click`, this._handleWatchListChange);
+    this.getElement().querySelector(`[for="${FilmCardControl.WATCHLIST}"]`).addEventListener(`click`, this._watchListChangeHandler);
   }
 
   setWatchedChangeHandler(callback) {
     this._callback.changeWatched = callback;
-    this.getElement().querySelector(`[for="${FilmCardControl.WATCHED}"]`).addEventListener(`click`, this._handleWatchedChange);
+    this.getElement().querySelector(`[for="${FilmCardControl.WATCHED}"]`).addEventListener(`click`, this._watchedChangeHandler);
   }
 
   setFavoriteChangeHandler(callback) {
     this._callback.changeFavorite = callback;
-    this.getElement().querySelector(`[for="${FilmCardControl.FAVORITE}"]`).addEventListener(`click`, this._handleFavoriteChange);
+    this.getElement().querySelector(`[for="${FilmCardControl.FAVORITE}"]`).addEventListener(`click`, this._favoriteChangeHandler);
   }
 
   setPopupCloseHandler(callback) {
     this._callback.closePopup = callback;
-    this.getCloseButton().addEventListener(`click`, this._handlePopupClose);
+    this.getCloseButton().addEventListener(`click`, this._popupCloseHandler);
   }
 
-  _handleWatchListChange(evt) {
+  _watchListChangeHandler(evt) {
     evt.preventDefault();
 
     if (!this._inputIsDisabled(evt)) {
@@ -132,7 +132,7 @@ export default class FilmCardPopup extends SmartView {
     this._disableInputs();
   }
 
-  _handleWatchedChange(evt) {
+  _watchedChangeHandler(evt) {
     evt.preventDefault();
 
     if (!this._inputIsDisabled(evt)) {
@@ -141,7 +141,7 @@ export default class FilmCardPopup extends SmartView {
     this._disableInputs();
   }
 
-  _handleFavoriteChange(evt) {
+  _favoriteChangeHandler(evt) {
     evt.preventDefault();
 
     if (!this._inputIsDisabled(evt)) {
@@ -150,7 +150,7 @@ export default class FilmCardPopup extends SmartView {
     this._disableInputs();
   }
 
-  _handlePopupClose(evt) {
+  _popupCloseHandler(evt) {
     evt.preventDefault();
     this._callback.closePopup();
   }

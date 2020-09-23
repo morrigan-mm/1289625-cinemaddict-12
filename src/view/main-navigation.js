@@ -46,8 +46,8 @@ export default class MainNavigation extends SmartView {
       page
     };
 
-    this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
-    this._handleStatisticsShow = this._handleStatisticsShow.bind(this);
+    this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
+    this._statisticsShowHandler = this._statisticsShowHandler.bind(this);
   }
 
   getTemplate() {
@@ -69,15 +69,15 @@ export default class MainNavigation extends SmartView {
 
   setFilterTypeChangeHandler(callback) {
     this._callback.changeFilterType = callback;
-    this.getElement().querySelector(`.main-navigation__items`).addEventListener(`click`, this._handleFilterTypeChange);
+    this.getElement().querySelector(`.main-navigation__items`).addEventListener(`click`, this._filterTypeChangeHandler);
   }
 
   setStatisticsShowHandler(callback) {
     this._callback.showStatistics = callback;
-    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, this._handleStatisticsShow);
+    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, this._statisticsShowHandler);
   }
 
-  _handleFilterTypeChange(evt) {
+  _filterTypeChangeHandler(evt) {
     evt.preventDefault();
 
     const target = evt.target.closest(`a`);
@@ -86,7 +86,7 @@ export default class MainNavigation extends SmartView {
     this._callback.changeFilterType(type);
   }
 
-  _handleStatisticsShow(evt) {
+  _statisticsShowHandler(evt) {
     evt.preventDefault();
 
     this._callback.showStatistics();

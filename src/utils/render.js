@@ -59,11 +59,3 @@ export const remove = (component) => {
   component.getElement().remove();
   component.removeElement();
 };
-
-export const renderTemplate = (container, template, place) => {
-  if (container instanceof Abstract) {
-    container = container.getElement();
-  }
-
-  container.insertAdjacentHTML(place, template);
-};

@@ -30,7 +30,7 @@ export default class Comment extends AbstractView {
     this._comment = comment;
     this._emoji = comment.emotion;
 
-    this._handleCommentDelete = this._handleCommentDelete.bind(this);
+    this._commentDeleteHandler = this._commentDeleteHandler.bind(this);
   }
 
   afterElementCreate() {
@@ -45,10 +45,10 @@ export default class Comment extends AbstractView {
 
   setDeleteCommentHandler(callback) {
     this._callback.deleteComment = callback;
-    this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._handleCommentDelete);
+    this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._commentDeleteHandler);
   }
 
-  _handleCommentDelete(evt) {
+  _commentDeleteHandler(evt) {
     evt.preventDefault();
 
     if (!isOnline()) {

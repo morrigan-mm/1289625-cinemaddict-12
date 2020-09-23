@@ -26,7 +26,7 @@ export default class SelectEmoji extends AbstractView {
     this._emoji = emoji;
     this._active = active;
 
-    this._handleClick = this._handleClick.bind(this);
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   afterElementCreate() {
@@ -42,10 +42,10 @@ export default class SelectEmoji extends AbstractView {
   setSelectHandler(callback) {
     this._callback.select = callback;
 
-    this.getElement().querySelector(`input`).addEventListener(`click`, this._handleClick);
+    this.getElement().querySelector(`input`).addEventListener(`click`, this._clickHandler);
   }
 
-  _handleClick() {
+  _clickHandler() {
     this._callback.select();
   }
 }

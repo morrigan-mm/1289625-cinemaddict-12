@@ -3,11 +3,11 @@ import CommentListView from "../view/comment-list.js";
 import {render, RenderPosition} from "../utils/render.js";
 
 export default class CommentList {
-  constructor(container, filmId, comments, onUserAction) {
+  constructor(container, filmId, comments, userActionHandler) {
     this._container = container;
     this._filmId = filmId;
     this._comments = comments;
-    this._onUserAction = onUserAction;
+    this._userActionHandler = userActionHandler;
 
     const view = new CommentListView(this._comments);
 
@@ -20,11 +20,11 @@ export default class CommentList {
     render(this._container, this._commentListView, RenderPosition.BEFOREEND);
 
     this._commentListView.setAddCommentHandler((localComment) => {
-      this._onUserAction(UserAction.ADD_COMMENT, {localComment, filmId: this._filmId});
+      this._userActionHandler(UserAction.ADD_COMMENT, {localComment, filmId: this._filmId});
     });
 
     this._commentListView.setDeleteCommentHandler((commentId) => {
-      this._onUserAction(UserAction.DELETE_COMMENT, commentId);
+      this._userActionHandler(UserAction.DELETE_COMMENT, commentId);
     });
   }
 }
